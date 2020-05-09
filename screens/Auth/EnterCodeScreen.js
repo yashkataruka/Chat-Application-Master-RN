@@ -22,7 +22,7 @@ const EnterCodeScreen = props => {
                     </View>
                 </View>
                 <TouchableOpacity onPress = {() => props.navigation.navigate("Main")} >
-                    <View style = {{height: 50, width: 50, borderRadius: 25, backgroundColor: Colors.primary,
+                    <View style = {{height: 50 ,width: 50, borderRadius: 25, backgroundColor: Colors.primary,
                         left: 290, bottom: 10, justifyContent: 'center', alignItems: 'center' }}>
                         <Ionicons name = "md-arrow-forward" size = {27} color = "white" />
                     </View>
