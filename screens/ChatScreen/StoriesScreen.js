@@ -46,7 +46,7 @@ const StoriesScreen = props => {
                 </Text>
                 <View style = {{marginTop:10}}>
                 {images.map((image, imageIndex) => {
-            return ( 
+            return ( //<Userstories/> here
               <View style = {{marginVertical:10}}
                 key={imageIndex}
               > 
@@ -72,7 +72,7 @@ const StoriesScreen = props => {
                 <View style = {{marginTop:10}}>
                 {images.map((image, imageIndex) => {
             return (
-                //Container here 
+                //<Userstories/> here 
               <View style = {{marginVertical:10}}
                 key={imageIndex}
               > 
