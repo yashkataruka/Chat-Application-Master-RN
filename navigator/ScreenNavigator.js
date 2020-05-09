@@ -4,7 +4,7 @@ import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack'
 import { createBottomTabNavigator } from 'react-navigation-tabs'
 import { Ionicons, MaterialCommunityIcons, FontAwesome } from '@expo/vector-icons'
-import {  useSelector} from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import EnterNumberScreen from '../screens/Auth/EnterNumberScreen';
 import EnterCodeScreen from '../screens/Auth/EnterCodeScreen';
@@ -94,7 +94,7 @@ const tabScreenConfig = {
         screen: ChatNavigator,
         navigationOptions: {
             tabBarIcon: (tabInfo) => {
-                return <Ionicons name = 'ios-chatbubbles' size = {35} color = {tabInfo.tintColor}/>
+                return <Ionicons name='ios-chatbubbles' size={35} color={tabInfo.tintColor} />
             },
             tabBarColor: 'white',
             tabBarLabel: 'Home'
@@ -105,14 +105,14 @@ const tabScreenConfig = {
         navigationOptions: {
             tabBarIcon: (tabInfo) => {
                 return (
-                    <View style = {{justifyContent: 'center', alignItems: 'center'}} >
-                        {!tabInfo.focused ? 
-                        <View>
-                            <Ionicons name = 'md-heart-empty' size = {35} color = {tabInfo.tintColor}/>
-                            {/* <Image style = {styles.story} /> */}
-                        </View>
-                        :
-                        <Ionicons name = "md-heart" size = {35} color = {Colors.primary}/>
+                    <View style={{ justifyContent: 'center', alignItems: 'center' }} >
+                        {!tabInfo.focused ?
+                            <View>
+                                <Ionicons name='md-heart-empty' size={35} color={tabInfo.tintColor} />
+                                {/* <Image style = {styles.story} /> */}
+                            </View>
+                            :
+                            <Ionicons name="md-heart" size={35} color={Colors.primary} />
                         }
                     </View>
                 )
@@ -126,9 +126,9 @@ const tabScreenConfig = {
         navigationOptions: {
             tabBarIcon: (tabInfo) => {
                 return (
-                    <View style = {{justifyContent: 'center', alignItems: 'center'}} >
-                        <ImageBackground style = {styles.post}>
-                            <MaterialCommunityIcons name = 'pencil' size = {35} color = "white"/>
+                    <View style={{ justifyContent: 'center', alignItems: 'center' }} >
+                        <ImageBackground style={styles.post}>
+                            <MaterialCommunityIcons name='pencil' size={35} color="white" />
                         </ImageBackground>
                     </View>
                 )
@@ -141,7 +141,7 @@ const tabScreenConfig = {
         screen: CampusNavigator,
         navigationOptions: {
             tabBarIcon: (tabInfo) => {
-                return <FontAwesome name = 'graduation-cap' size = {30} color = {tabInfo.tintColor}/>
+                return <FontAwesome name='graduation-cap' size={30} color={tabInfo.tintColor} />
             },
             tabBarColor: 'white',
             tabBarLabel: 'Campus'
@@ -151,7 +151,7 @@ const tabScreenConfig = {
         screen: MiscNavigator,
         navigationOptions: {
             tabBarIcon: (tabInfo) => {
-                return <FontAwesome name = 'navicon' size = {30} color = {tabInfo.tintColor}/>
+                return <FontAwesome name='navicon' size={30} color={tabInfo.tintColor} />
             },
             tabBarColor: 'white',
             tabBarLabel: 'Misc'
@@ -199,12 +199,12 @@ const styles = StyleSheet.create({
 })
 
 const AuthNavigator = createSwitchNavigator({
-    NumberLogin: {
-        screen: NumberLoginNavigator
-    },
-    EnterCode: {
-        screen: EnterCodeNavigator
-    },
+    // NumberLogin: {
+    //     screen: NumberLoginNavigator
+    // },
+    // EnterCode: {
+    //     screen: EnterCodeNavigator
+    // },
     Main: {
         screen: MainNavigator
     }
