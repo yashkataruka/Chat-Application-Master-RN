@@ -1,20 +1,28 @@
 import React from 'react'
-import { View, Text, StyleSheet, Image, ScrollView } from 'react-native'
-
+import { View, Text, StyleSheet, ImageBackground,Image, ScrollView, Dimensions } from 'react-native'
+import { Ionicons } from '@expo/vector-icons';
 
 
 class UserStories extends React.Component {
   renderStories = () => {
-    return this.props.stories.map(img => {
+    return this.props.stories.map((img,index) => {
       return (
-        <Image
-          source={{ uri: img }}
+        <ImageBackground
+        key = {index}
+          source={{ uri: img.imag }}
           style={styles.story}
-        />
+        >
+             <View style = {{position: 'absolute',bottom:0,marginLeft:5}}>
+             {
+               img.type=='image'?<Ionicons name = "md-camera" size = {20} color = "white" />:<Ionicons name = "md-videocam" size = {20} color = "white" />
+             }
+             </View>
+        </ImageBackground>
       )
     })
   }
   render() {
+    const no = this.props.stories.length
     return (
       <View style={styles.mainView}>
         <View style={styles.upper}>
@@ -23,7 +31,7 @@ class UserStories extends React.Component {
             style={styles.image}
           />
           <Text style={styles.username}>{this.props.name}</Text>
-          <Text style={styles.rightInfo}>date and time</Text>
+          <Text style={styles.rightInfo}>date and time | {no}</Text>
         </View>
         <ScrollView
           style={styles.lower}
@@ -41,12 +49,14 @@ class UserStories extends React.Component {
 const styles = StyleSheet.create({
   mainView: {
     flexDirection: 'column',
+    width:Dimensions.get('screen').width-50,
   },
   upper: {
     flexDirection: 'row',
+    alignItems:'center'
   },
   lower: {
-    flexDirection: 'row'
+    flexDirection: 'row',
   },
   image: {
     width: 30,

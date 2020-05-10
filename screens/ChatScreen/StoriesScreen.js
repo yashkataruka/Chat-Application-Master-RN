@@ -7,25 +7,47 @@ const images = [
   {
     image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=634&q=80",
     name: 'Ashish',
-    uri: ["https://images.unsplash.com/photo-1556740749-887f6717d7e4",
-      "https://images.unsplash.com/photo-1556740749-887f6717d7e4"]
+    uri: [{imag:"https://images.unsplash.com/photo-1556740749-887f6717d7e4",
+          type:'image'},
+      {imag:"https://images.unsplash.com/photo-1556740749-887f6717d7e4",
+      type:'video'},
+      ]
   },
   {
     name: 'Aaron',
-    uri: ["https://images.unsplash.com/photo-1556740749-887f6717d7e4",
-      "https://images.unsplash.com/photo-1556740749-887f6717d7e4"],
+    uri: [{imag:"https://images.unsplash.com/photo-1556740749-887f6717d7e4",
+    type:'image'},
+{imag:"https://images.unsplash.com/photo-1556740749-887f6717d7e4",
+type:'video'},
+],
     image: "https://images.unsplash.com/photo-1532910404247-7ee9488d7292?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=282&q=80"
   },
   {
     name: 'Ronaldo',
-    uri: ["https://images.unsplash.com/photo-1556740749-887f6717d7e4",
-      "https://images.unsplash.com/photo-1556740749-887f6717d7e4"],
+    uri: [{imag:"https://images.unsplash.com/photo-1556740749-887f6717d7e4",
+    type:'image'},
+{imag:"https://images.unsplash.com/photo-1556740749-887f6717d7e4",
+type:'video'},
+{imag:"https://images.unsplash.com/photo-1556740749-887f6717d7e4",
+    type:'image'},
+{imag:"https://images.unsplash.com/photo-1556740749-887f6717d7e4",
+type:'video'},
+{imag:"https://images.unsplash.com/photo-1556740749-887f6717d7e4",
+    type:'image'},
+{imag:"https://images.unsplash.com/photo-1556740749-887f6717d7e4",
+type:'video'},],
     image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-1.2.1&auto=format&fit=crop&w=334&q=80"
   },
   {
     name: 'Messi',
-    uri: ["https://images.unsplash.com/photo-1556740749-887f6717d7e4",
-      "https://images.unsplash.com/photo-1556740749-887f6717d7e4"],
+    uri: [{imag:"https://images.unsplash.com/photo-1556740749-887f6717d7e4",
+    type:'image'},
+{imag:"https://images.unsplash.com/photo-1556740749-887f6717d7e4",
+type:'video'},
+{imag:"https://images.unsplash.com/photo-1556740749-887f6717d7e4",
+    type:'image'},
+{imag:"https://images.unsplash.com/photo-1556740749-887f6717d7e4",
+type:'video'},],
     image: "https://images.unsplash.com/photo-1556740749-887f6717d7e4"
   },
 ];
@@ -33,7 +55,7 @@ const images = [
 
 const StoriesScreen = props => {
   return (
-    <ScrollView showsVerticalScrollIndicator={false}>
+    <ScrollView showsVerticalScrollIndicator={true}>
       <View style={styles.coontainer} >
         <View style={styles.addStory}>
           <TouchableOpacity>
@@ -46,56 +68,40 @@ const StoriesScreen = props => {
             <Text>Add to my Story</Text>
           </View>
         </View>
-        <View style={{ marginTop: 30 }}>
+        <View style={{ marginTop: 30,marginBottom:40 }}>
           <Text style={{ fontSize: 14, fontWeight: '700', color: 'grey' }}>
             RECENT STORIES
-                </Text>
-          <View style={{ marginTop: 10 }}>
-            {images.map((image, imageIndex) => {
+          </Text>
+          <View style={{ marginTop: 10,paddingRight:40 ,flexDirection:"column"}}>
+            {images.map((img, imageIndex) => {
               return ( //<Userstories/> here
-                <View style={{ marginVertical: 10 }}
+                <View style={{ marginVertical: 20}}
                   key={imageIndex}
                 >
-
-                  <View style={{ flexDirection: 'row' }}>
-                    <ImageBackground source={{ uri: image.uri[0] }} style={styles.card}>
-                      <View style={styles.textContainer}>
-                        <Text style={styles.infoText}>
-                          {image.name}
-                        </Text>
-                      </View>
-                    </ImageBackground>
-                  </View>
+                <UserStories stories = {img.uri} image = {img.image} name = {img.name}/>
                 </View>
               );
             })}
           </View>
         </View>
-        <View style={{ marginTop: 30 }}>
+        <View style={{ marginTop: 30,marginBottom:40 }}>
           <Text style={{ fontSize: 14, fontWeight: '700', color: 'grey' }}>
             VIEWED STORIES
-                </Text>
-          <View style={{ marginTop: 10 }}>
-            {images.map((image, imageIndex) => {
-              return (
-                //<Userstories/> here 
-                <View style={{ marginVertical: 10 }}
+          </Text>
+          <View style={{ marginTop: 10,paddingRight:40 }}>
+            {images.map((img, imageIndex) => {
+              return ( //<Userstories/> here
+                <View style={{ marginVertical: 20 }}
                   key={imageIndex}
                 >
-                  <View style={{ flexDirection: 'row' }}>
-                    <ImageBackground source={{ uri: image.uri[0] }} style={styles.card}>
-                      <View style={styles.textContainer}>
-                        <Text style={styles.infoText}>
-                          {image.name}
-                        </Text>
-                      </View>
-                    </ImageBackground>
-                  </View>
+                <UserStories name={img.name} image = {img.image} stories = {img.uri}/>
                 </View>
               );
             })}
           </View>
         </View>
+        
+
 
       </View>
     </ScrollView>
@@ -129,33 +135,15 @@ const styles = StyleSheet.create({
 
   },
   addStoryBox: {
-    width: 80,
-    height: 110,
+    width: 70,
+    height: 100,
     borderWidth: 0.8,
-    borderRadius: 5,
+    borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
     borderColor: 'grey'
   },
-  card: {
-    flex: 1,
-    marginVertical: 4,
-    borderRadius: 5,
-    overflow: "hidden",
-    alignItems: "center",
-    justifyContent: "center"
-  },
-  textContainer: {
-    backgroundColor: "rgba(0,0,0, 0.7)",
-    paddingHorizontal: 24,
-    paddingVertical: 8,
-    borderRadius: 5
-  },
-  infoText: {
-    color: "white",
-    fontSize: 16,
-    fontWeight: "bold"
-  },
+
 })
 
 export default StoriesScreen;
