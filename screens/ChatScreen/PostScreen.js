@@ -1,10 +1,18 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TextInput } from 'react-native';
+import { Ionicons, MaterialCommunityIcons, FontAwesome } from '@expo/vector-icons'
 
 const PostScreen = props => {
     return (
-        <View style = {styles.coontainer} >
-            <Text>Post Screen</Text>
+        <View style={styles.searchBar} >
+            <TextInput
+                style={styles.searchInputStyle}
+                placeholder="Search #music #party #travel"
+                onChangeText={text => console.log(text)}
+                onEndEditing={() => console.log("edit end")}
+            ></TextInput>
+            <FontAwesome name="search" style={styles.searchIconStyle} />
+
         </View>
     );
 }
@@ -22,10 +30,25 @@ PostScreen.navigationOptions = navData => {
 }
 
 const styles = StyleSheet.create({
-    coontainer: {
+    searchBar: {
+        height: 40,
+        backgroundColor: 'gainsboro',
+        borderRadius: 10,
+        flexDirection: 'row',
+        marginHorizontal: 7,
+        marginTop: 10
+    },
+    searchInputStyle: {
+        fontSize: 18,
+        fontWeight: '300',
+        paddingHorizontal: 10
+    },
+    searchIconStyle: {
+        fontSize: 25,
         flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center'
+        textAlign: 'right',
+        alignSelf: 'center',
+        marginHorizontal: 10
     }
 })
 
