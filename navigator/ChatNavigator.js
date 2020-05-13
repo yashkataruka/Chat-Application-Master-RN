@@ -11,10 +11,13 @@ import GroupsScreen from '../screens/ChatScreen/GroupsScreen';
 import NearbyScreen from '../screens/ChatScreen/NearbyScreen';
 import ActiveScreen from '../screens/ChatScreen/ActiveScreen';
 import ChatDetailScreen from '../screens/ChatScreen/ChatDetailScreen';
+import CustomHeader from '../components/Header'
+
 
 const homeScreenConfig = {
     Chats: {
-        screen: ChatsScreen
+        screen:ChatsScreen,
+
     },
     Groups: {
         screen: GroupsScreen
@@ -49,22 +52,17 @@ const ChatNavigator = createStackNavigator({
         screen: HomeNavigator,
         navigationOptions: {
             headerTintColor: 'white',
+            
+            headerTitle:'Home',
+
             headerTitleAlign: 'center',
-            headerTitle: 'Home',
             headerStyle: {
                 elevation: 0,
                 backgroundColor: Colors.primary
             },
-            headerRight: () => {
+            headerRight: ({navigation}) => {
                 return (
-                    <View style = {{flexDirection: 'row'}} >
-                        <TouchableOpacity>
-                            <Ionicons name = "md-search" size = {25} color = 'white' style = {{marginRight: 20}} />
-                        </TouchableOpacity>
-                        <TouchableOpacity>
-                            <Ionicons name = "md-add" size = {25} color = 'white' style = {{marginRight: 20}} />
-                        </TouchableOpacity>
-                    </View>
+                    <CustomHeader/>
                 )
             }
         }
