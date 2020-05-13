@@ -97,7 +97,7 @@ const tabScreenConfig = {
                 return <Ionicons name='ios-chatbubbles' size={35} color={tabInfo.tintColor} />
             },
             tabBarColor: 'white',
-            tabBarLabel: 'Home'
+            tabBarLabel: 'Home',
         }
     },
     Stories: {
@@ -178,7 +178,7 @@ const MainNavigator = createStackNavigator({
     Tab: {
         screen: BottomTabNavigator,
         navigationOptions: {
-            headerShown: false
+            headerShown: false,
         }
     },
     ChatDetail: {

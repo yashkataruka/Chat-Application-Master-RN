@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet,ScrollView, Button, TouchableOpacity,TextInput, Dimensions,Image,Modal, Keyboard,Animated } from 'react-native';
+import { View, Text, StyleSheet,ScrollView, Button, TouchableOpacity,TextInput, Dimensions,Image,Modal, Keyboard,Animated,Easing } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -10,6 +10,7 @@ class ChatsScreen extends React.Component{
     constructor(props){
         super(props);
         this.showSearch = new Animated.Value(0)
+        this.spin = new Animated.Value(0)
         this.state = {
             searchList : [],
             current:'',
@@ -143,7 +144,8 @@ class ChatsScreen extends React.Component{
         this.people.map(p => {if(p.username===this.state.current){
             this.setState({
                 modalshow:true,
-                modal:p
+                modal:p,
+                searchList:[]
             },()=>console.log(this.state.modal))
         }})
         
@@ -154,17 +156,29 @@ class ChatsScreen extends React.Component{
             pressed:true
         })
         if(!this.state.pressed){
+            this.spin.setValue(0)
             Animated.timing(this.showSearch,{
                 toValue:1,
-                duration:300
+                duration:400,
+                easing:Easing.linear
             }).start()}
         else{
             
-            Animated.timing(this.showSearch,{
+            Animated.sequence([Animated.timing(this.showSearch,{
                 toValue:0,
                 duration:300
-            }).start(()=>this.setState({
-                pressed:false
+            }),
+            Animated.timing(
+                this.spin,
+              {
+                toValue: 1,
+                duration: 200,
+                easing: Easing.linear,
+              }
+            )
+        ]).start(()=>this.setState({
+                pressed:false,
+                searchList:[]
             }))
 
         }
@@ -174,7 +188,6 @@ class ChatsScreen extends React.Component{
         this.setState({
             modalshow:false,
             showSearch:false,
-            pressed:false
         })
         this.props.navigation.navigate("ChatDetail", {
             name: `${this.state.modal.name}`
@@ -186,8 +199,12 @@ class ChatsScreen extends React.Component{
 
         const width = this.showSearch.interpolate({
             inputRange:[0,1],
-            outputRange:[50,w]
+            outputRange:[0,w]
         }); 
+        const spin = this.spin.interpolate({
+            inputRange: [0, 1],
+            outputRange: ['0deg', '90deg']
+          });
         
  
     return (
@@ -204,16 +221,18 @@ class ChatsScreen extends React.Component{
                                     opacity:0.8,
                                     marginTop:20,
                                     height:50,
-                                    width}}>
-                <Ionicons onPress = {()=>this.show()} style={styles.searchIcon} name={this.state.pressed?"md-close":"md-search"} size={30} color="#fff"/>
+                                    width,
+                                    transform: [{rotate: spin}]}}>
+                <Ionicons  style={styles.searchIcon} name="md-search" size={30} color="#fff"/>
                 <TextInput
                     style={styles.input}
                     placeholder="Search"
-                    placeholderTextColor='black'
+                    placeholderTextColor='#fff'
                     onChangeText={(searchString) => this.updateSearch(searchString)}
                     underlineColorAndroid="transparent"
                     clearButtonMode="always"
                 />
+                <Ionicons onPress = {()=>this.show()} style={styles.searchIcon} name={this.state.pressed?"md-close":"md-search"} size={30} color="#fff"/>
 
             </Animated.View>
             : null
@@ -240,72 +259,72 @@ class ChatsScreen extends React.Component{
                  }  
             </ScrollView>
             :
-            <ScrollView contentContainerStyle = {styles.container} >
-            <Chat name = "Yash Kataruka" message = "Hi, are you free right now?" online
-                onSelect = {() => this.props.navigation.navigate("ChatDetail", {
-                    name: "Yash Kataruka"
-                })} time = "16:43 PM" delivered
-                image = "https://scontent.fdel21-1.fna.fbcdn.net/v/t31.0-0/p640x640/27500624_1631883743526849_5371185179369120659_o.jpg?_nc_cat=111&_nc_sid=85a577&_nc_ohc=HxC82h-6TjgAX9PHczR&_nc_ht=scontent.fdel21-1.fna&_nc_tp=6&oh=433e35c82605599e6def6a9d1ce587d5&oe=5ED304FC" 
-            />
-            <Chat name = "Yash Kataruka" message = "Hi, are you free right now?" online
-                onSelect = {() => this.props.navigation.navigate("ChatDetail", {
-                    name: "Yash Kataruka"
-                })} time = "16:43 PM" delivered
-                image = "https://scontent.fdel21-1.fna.fbcdn.net/v/t31.0-0/p640x640/27500624_1631883743526849_5371185179369120659_o.jpg?_nc_cat=111&_nc_sid=85a577&_nc_ohc=HxC82h-6TjgAX9PHczR&_nc_ht=scontent.fdel21-1.fna&_nc_tp=6&oh=433e35c82605599e6def6a9d1ce587d5&oe=5ED304FC" 
-            />
-            <Chat name = "Ashish" message = "Hi, are you free right now?" online
-                onSelect = {() => this.props.navigation.navigate("ChatDetail", {
-                    name: "Ashish"
-                })} time = "16:43 PM" delivered
-                image = "https://scontent.fdel21-1.fna.fbcdn.net/v/t31.0-0/p640x640/27500624_1631883743526849_5371185179369120659_o.jpg?_nc_cat=111&_nc_sid=85a577&_nc_ohc=HxC82h-6TjgAX9PHczR&_nc_ht=scontent.fdel21-1.fna&_nc_tp=6&oh=433e35c82605599e6def6a9d1ce587d5&oe=5ED304FC" 
-            />
-            <Chat name = "Yash Kataruka" message = "Hi, are you free right now?" online
-                onSelect = {() => this.props.navigation.navigate("ChatDetail", {
-                    name: "Yash Kataruka"
-                })} time = "16:43 PM" delivered
-                image = "https://scontent.fdel21-1.fna.fbcdn.net/v/t31.0-0/p640x640/27500624_1631883743526849_5371185179369120659_o.jpg?_nc_cat=111&_nc_sid=85a577&_nc_ohc=HxC82h-6TjgAX9PHczR&_nc_ht=scontent.fdel21-1.fna&_nc_tp=6&oh=433e35c82605599e6def6a9d1ce587d5&oe=5ED304FC" 
-            />
-            <Chat name = "Yash Kataruka" message = "Hi, are you free right now?" online
-                onSelect = {() => this.props.navigation.navigate("ChatDetail", {
-                    name: "Yash Kataruka"
-                })} time = "16:43 PM" delivered
-                image = "https://scontent.fdel21-1.fna.fbcdn.net/v/t31.0-0/p640x640/27500624_1631883743526849_5371185179369120659_o.jpg?_nc_cat=111&_nc_sid=85a577&_nc_ohc=HxC82h-6TjgAX9PHczR&_nc_ht=scontent.fdel21-1.fna&_nc_tp=6&oh=433e35c82605599e6def6a9d1ce587d5&oe=5ED304FC" 
-            />
-            <Chat name = "Ashish" message = "Hi, are you free right now?" online
-                onSelect = {() => this.props.navigation.navigate("ChatDetail", {
-                    name: "Ashish"
-                })} time = "16:43 PM" delivered
-                image = "https://scontent.fdel21-1.fna.fbcdn.net/v/t31.0-0/p640x640/27500624_1631883743526849_5371185179369120659_o.jpg?_nc_cat=111&_nc_sid=85a577&_nc_ohc=HxC82h-6TjgAX9PHczR&_nc_ht=scontent.fdel21-1.fna&_nc_tp=6&oh=433e35c82605599e6def6a9d1ce587d5&oe=5ED304FC" 
-            />
-            <Chat name = "Yash Kataruka" message = "Hi, are you free right now?" online
-                onSelect = {() => this.props.navigation.navigate("ChatDetail", {
-                    name: "Yash Kataruka"
-                })} time = "16:43 PM" delivered
-                image = "https://scontent.fdel21-1.fna.fbcdn.net/v/t31.0-0/p640x640/27500624_1631883743526849_5371185179369120659_o.jpg?_nc_cat=111&_nc_sid=85a577&_nc_ohc=HxC82h-6TjgAX9PHczR&_nc_ht=scontent.fdel21-1.fna&_nc_tp=6&oh=433e35c82605599e6def6a9d1ce587d5&oe=5ED304FC" 
-            />
-            <Chat name = "Yash Kataruka" message = "Hi, are you free right now?" online
-                onSelect = {() => this.props.navigation.navigate("ChatDetail", {
-                    name: "Yash Kataruka"
-                })} time = "16:43 PM" delivered
-                image = "https://scontent.fdel21-1.fna.fbcdn.net/v/t31.0-0/p640x640/27500624_1631883743526849_5371185179369120659_o.jpg?_nc_cat=111&_nc_sid=85a577&_nc_ohc=HxC82h-6TjgAX9PHczR&_nc_ht=scontent.fdel21-1.fna&_nc_tp=6&oh=433e35c82605599e6def6a9d1ce587d5&oe=5ED304FC" 
-            />
-            <Chat name = "Ashish" message = "Hi, are you free right now?" online
-                onSelect = {() => this.props.navigation.navigate("ChatDetail", {
-                    name: "Ashish"
-                })} time = "16:43 PM" delivered
-                image = "https://scontent.fdel21-1.fna.fbcdn.net/v/t31.0-0/p640x640/27500624_1631883743526849_5371185179369120659_o.jpg?_nc_cat=111&_nc_sid=85a577&_nc_ohc=HxC82h-6TjgAX9PHczR&_nc_ht=scontent.fdel21-1.fna&_nc_tp=6&oh=433e35c82605599e6def6a9d1ce587d5&oe=5ED304FC" 
-            />
+            <ScrollView contentContainerStyle = {styles.container} scrollIndicatorInsets={4} >
+                <Chat name = "Yash Kataruka" message = "Hi, are you free right now?" online
+                 onSelect = {() => this.props.navigation.navigate("ChatDetail", {
+                        name: "Yash Kataruka"
+                    })} time = "16:43 PM" delivered
+                 image = "https://scontent.fdel21-1.fna.fbcdn.net/v/t31.0-0/p640x640/27500624_1631883743526849_5371185179369120659_o.jpg?_nc_cat=111&_nc_sid=85a577&_nc_ohc=HxC82h-6TjgAX9PHczR&_nc_ht=scontent.fdel21-1.fna&_nc_tp=6&oh=433e35c82605599e6def6a9d1ce587d5&oe=5ED304FC" 
+                />
+                <Chat name = "Yash Kataruka" message = "Hi, are you free right now?" online
+                    onSelect = {() => this.props.navigation.navigate("ChatDetail", {
+                        name: "Yash Kataruka"
+                    })} time = "16:43 PM" delivered
+                    image = "https://scontent.fdel21-1.fna.fbcdn.net/v/t31.0-0/p640x640/27500624_1631883743526849_5371185179369120659_o.jpg?_nc_cat=111&_nc_sid=85a577&_nc_ohc=HxC82h-6TjgAX9PHczR&_nc_ht=scontent.fdel21-1.fna&_nc_tp=6&oh=433e35c82605599e6def6a9d1ce587d5&oe=5ED304FC" 
+                />
+                <Chat name = "Ashish" message = "Hi, are you free right now?" online
+                    onSelect = {() => this.props.navigation.navigate("ChatDetail", {
+                        name: "Ashish"
+                 })} time = "16:43 PM" delivered
+                    image = "https://scontent.fdel21-1.fna.fbcdn.net/v/t31.0-0/p640x640/27500624_1631883743526849_5371185179369120659_o.jpg?_nc_cat=111&_nc_sid=85a577&_nc_ohc=HxC82h-6TjgAX9PHczR&_nc_ht=scontent.fdel21-1.fna&_nc_tp=6&oh=433e35c82605599e6def6a9d1ce587d5&oe=5ED304FC" 
+                />
+                <Chat name = "Yash Kataruka" message = "Hi, are you free right now?" online
+                    onSelect = {() => this.props.navigation.navigate("ChatDetail", {
+                        name: "Yash Kataruka"
+                    })} time = "16:43 PM" delivered
+                    image = "https://scontent.fdel21-1.fna.fbcdn.net/v/t31.0-0/p640x640/27500624_1631883743526849_5371185179369120659_o.jpg?_nc_cat=111&_nc_sid=85a577&_nc_ohc=HxC82h-6TjgAX9PHczR&_nc_ht=scontent.fdel21-1.fna&_nc_tp=6&oh=433e35c82605599e6def6a9d1ce587d5&oe=5ED304FC" 
+                />
+                <Chat name = "Yash Kataruka" message = "Hi, are you free right now?" online
+                    onSelect = {() => this.props.navigation.navigate("ChatDetail", {
+                        name: "Yash Kataruka"
+                    })} time = "16:43 PM" delivered
+                    image = "https://scontent.fdel21-1.fna.fbcdn.net/v/t31.0-0/p640x640/27500624_1631883743526849_5371185179369120659_o.jpg?_nc_cat=111&_nc_sid=85a577&_nc_ohc=HxC82h-6TjgAX9PHczR&_nc_ht=scontent.fdel21-1.fna&_nc_tp=6&oh=433e35c82605599e6def6a9d1ce587d5&oe=5ED304FC" 
+                />
+                <Chat name = "Ashish" message = "Hi, are you free right now?" online
+                    onSelect = {() => this.props.navigation.navigate("ChatDetail", {
+                        name: "Ashish"
+                    })} time = "16:43 PM" delivered
+                    image = "https://scontent.fdel21-1.fna.fbcdn.net/v/t31.0-0/p640x640/27500624_1631883743526849_5371185179369120659_o.jpg?_nc_cat=111&_nc_sid=85a577&_nc_ohc=HxC82h-6TjgAX9PHczR&_nc_ht=scontent.fdel21-1.fna&_nc_tp=6&oh=433e35c82605599e6def6a9d1ce587d5&oe=5ED304FC" 
+                />
+                <Chat name = "Yash Kataruka" message = "Hi, are you free right now?" online
+                    onSelect = {() => this.props.navigation.navigate("ChatDetail", {
+                        name: "Yash Kataruka"
+                    })} time = "16:43 PM" delivered
+                    image = "https://scontent.fdel21-1.fna.fbcdn.net/v/t31.0-0/p640x640/27500624_1631883743526849_5371185179369120659_o.jpg?_nc_cat=111&_nc_sid=85a577&_nc_ohc=HxC82h-6TjgAX9PHczR&_nc_ht=scontent.fdel21-1.fna&_nc_tp=6&oh=433e35c82605599e6def6a9d1ce587d5&oe=5ED304FC" 
+                />
+                <Chat name = "Yash Kataruka" message = "Hi, are you free right now?" online
+                    onSelect = {() => this.props.navigation.navigate("ChatDetail", {
+                        name: "Yash Kataruka"
+                    })} time = "16:43 PM" delivered
+                    image = "https://scontent.fdel21-1.fna.fbcdn.net/v/t31.0-0/p640x640/27500624_1631883743526849_5371185179369120659_o.jpg?_nc_cat=111&_nc_sid=85a577&_nc_ohc=HxC82h-6TjgAX9PHczR&_nc_ht=scontent.fdel21-1.fna&_nc_tp=6&oh=433e35c82605599e6def6a9d1ce587d5&oe=5ED304FC" 
+                />
+                <Chat name = "Ashish" message = "Hi, are you free right now?" online
+                    onSelect = {() => this.props.navigation.navigate("ChatDetail", {
+                        name: "Ashish"
+                    })} time = "16:43 PM" delivered
+                    image = "https://scontent.fdel21-1.fna.fbcdn.net/v/t31.0-0/p640x640/27500624_1631883743526849_5371185179369120659_o.jpg?_nc_cat=111&_nc_sid=85a577&_nc_ohc=HxC82h-6TjgAX9PHczR&_nc_ht=scontent.fdel21-1.fna&_nc_tp=6&oh=433e35c82605599e6def6a9d1ce587d5&oe=5ED304FC" 
+                />
             </ScrollView>
             }
             <View style={{position: 'absolute',
-   width: 50,
-   height: 50,
-   borderRadius:25,
-   backgroundColor:'#009ACD',
-   alignItems: 'center',
-   justifyContent: 'center',
-   right: 30,
-   bottom: 30,}}>
+                            width: 50,
+                            height: 50,
+                            borderRadius:25,
+                            backgroundColor:'#009ACD',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            right: 30,
+                            bottom: 30,}}>
                 <Ionicons onPress = {()=>this.show()} style={styles.searchIcon} name={this.state.pressed?"md-close":"md-search"} size={30} color="#fff"/>
 
             </View> 
@@ -363,24 +382,15 @@ class ChatsScreen extends React.Component{
 const styles = StyleSheet.create({
     coontainer: {
         flex: 1,
-        // justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: 'white',
-        paddingHorizontal:20
+        paddingHorizontal:10,
     },
     container:{
         
         paddingTop:20,
         alignItems: 'center',
         width: '100%',
-    },
-    search:{
-        backgroundColor:'#d5dae6',
-        marginTop:10,
-        height:40,
-        paddingLeft:20,
-        width:Dimensions.get('screen').width-30,
-        borderRadius:8
     },
     image: {
         width: 50,
@@ -394,7 +404,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         width: '100%',
-        borderBottomWidth:0.3
     },
     infoContainer: {
         width: '80%',
