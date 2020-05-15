@@ -1,44 +1,50 @@
 import React from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, PixelRatio } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 import Colors from '../../constants/Colors';
+
+var FONT_SIZE = 15;
+
+if (PixelRatio.get() >= 3) {
+    FONT_SIZE = 20
+}
 
 const EnterCodeScreen = props => {
     return (
         <View style = {styles.container} >
             <View style = {styles.card} >
-                <View style = {{margin: 20}} >
-                    <Text style = {{fontWeight: 'bold', fontSize: 20}} >
+                <View style = {{margin: 20, height: 30}} >
+                    <Text style = {{fontWeight: 'bold', fontSize: FONT_SIZE}} >
                         Waiting to automatically detect and send SMS to +91-9600644453
                     </Text>
                 </View>
                 <View style = {styles.code} >
                     <View style = {{flexDirection: 'row', alignItems: 'center'}} >
-                        <TextInput style = {styles.textInput} keyboardType = "number-pad" />
-                        <TextInput style = {styles.textInput} keyboardType = "number-pad" />
-                        <TextInput style = {styles.textInput} keyboardType = "number-pad" />
-                        <TextInput style = {styles.textInput} keyboardType = "number-pad" />
+                        <TextInput style = {styles.textInput} keyboardType = "number-pad" maxLength = {1} />
+                        <TextInput style = {styles.textInput} keyboardType = "number-pad" maxLength = {1} />
+                        <TextInput style = {styles.textInput} keyboardType = "number-pad" maxLength = {1} />
+                        <TextInput style = {styles.textInput} keyboardType = "number-pad" maxLength = {1} />
                     </View>
                 </View>
-                <TouchableOpacity onPress = {() => props.navigation.navigate("Main")} >
-                    <View style = {{height: 50, width: 50, borderRadius: 25, backgroundColor: Colors.primary,
-                        left: 290, bottom: 10, justifyContent: 'center', alignItems: 'center' }}>
-                        <Ionicons name = "md-arrow-forward" size = {27} color = "white" />
-                    </View>
-                </TouchableOpacity>
+                <View style = {{height: 50, width: 50, backgroundColor: Colors.primary, justifyContent: 'center', 
+                    alignItems: 'center', borderRadius: 25, left: '90%', top: '20%'}} >
+                    <TouchableOpacity onPress = {() => props.navigation.navigate("Main")} >
+                        <Ionicons name = "md-arrow-forward" color = "white" size = {27} />
+                    </TouchableOpacity>
+                </View>
             </View>
             <View style = {{flex: 1, justifyContent: 'flex-end', marginBottom: 30}}>
-                <Text style = {{fontSize: 18, fontWeight: 'bold', marginLeft: 40, marginBottom: 20}} >Didn't receive the code?</Text>
+                <Text style = {{fontSize: FONT_SIZE, fontWeight: 'bold', marginLeft: 40, marginBottom: 20}} >Didn't receive the code?</Text>
                 <View style = {{flexDirection: 'row', marginRight: 10}} >
                     <TouchableOpacity onPress = {() => console.log("Working?")} >
                         <View style = {styles.connectSocially} >
-                            <Text style = {{color: 'white', marginHorizontal: 10, marginVertical: 5, fontSize: 20}}>Resend code</Text>
+                            <Text style = {{color: 'white', marginHorizontal: 10, marginVertical: 5, fontSize: FONT_SIZE}}>Resend code</Text>
                         </View>
                     </TouchableOpacity>
                     <TouchableOpacity onPress = {() => props.navigation.navigate("NumberLogin")} >
                         <View style = {styles.connectSocially1} >
-                            <Text style = {{color: 'white', marginHorizontal: 10, marginVertical: 5, fontSize: 20}}>Change mobile number</Text>
+                            <Text style = {{color: 'white', marginHorizontal: 10, marginVertical: 5, fontSize: FONT_SIZE}}>Change mobile number</Text>
                         </View>
                     </TouchableOpacity>
                 </View>
@@ -72,8 +78,7 @@ const styles = StyleSheet.create({
         borderRadius: 10
     },
     code: {
-        marginTop: 20,
-        marginLeft: 20,
+        paddingLeft: 20,
         flexDirection: 'row',
         justifyContent: 'flex-start',
         alignItems: 'center'

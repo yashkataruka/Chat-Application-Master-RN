@@ -1,161 +1,218 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
-import { GiftedChat, InputToolbar, Send, Bubble, Actions, Composer } from 'react-native-gifted-chat';
-import { Ionicons } from '@expo/vector-icons';
+import { View, Text, StyleSheet, ScrollView, SafeAreaView, ActivityIndicator,
+    TouchableOpacity, Platform, KeyboardAvoidingView, Alert, Dimensions, RecyclerViewBackedScrollViewBase } from 'react-native';
+import { GiftedChat, InputToolbar, Send, Bubble, Actions, Composer, Time, Message } from 'react-native-gifted-chat';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import * as ImagePicker from 'expo-image-picker';
+import * as Permissions from 'expo-permissions';
+import { Picker } from 'emoji-mart';
+import { useSelector, useDispatch } from 'react-redux';
 
 import Colors from '../../constants/Colors';
+import * as actionTypes from '../../store/actions/UpdateMessage';
 
 const ChatDetailScreen = props => {
 
-    const [messages, setMessages] = useState([]);
+    const [messages1, setMessages] = useState([]);
+    const [inputText, setInputText] = useState("");
 
-    useEffect(() => {
-        setMessages([
-            {_id: 1, text: 'Hello developer', createdAt: new Date(), user: {
-            _id: 2,
-            name: 'React Native',
-            avatar: 'https://placeimg.com/140/140/any' }
-        }, {_id: 2, text: 'Hello developer', createdAt: new Date(), user: {
-            _id: 2,
-            name: 'React Native',
-            avatar: 'https://placeimg.com/140/140/any' }
-        }, {_id: 3, text: 'Hello developer', createdAt: new Date(), user: {
-            _id: 2,
-            name: 'React Native',
-            avatar: 'https://placeimg.com/140/140/any' }
-        }, {_id: 4, text: 'Hello developer', createdAt: new Date(), user: {
-            _id: 2,
-            name: 'React Native',
-            avatar: 'https://placeimg.com/140/140/any' }
-        }, {_id: 5, text: 'Hello developer', createdAt: new Date(), user: {
-            _id: 2,
-            name: 'React Native',
-            avatar: 'https://placeimg.com/140/140/any' }
-        }, {_id: 6, text: 'Hello Bot', createdAt: new Date(), user: {
-            _id: 1,
-            name: 'Yash',
-            avatar: 'https://placeimg.com/140/140/any' }
-        }, {_id: 7, text: 'Hello Bot', createdAt: new Date(), user: {
-            _id: 1,
-            name: 'Yash',
-            avatar: 'https://placeimg.com/140/140/any' }
-        }, {_id: 8, text: 'Hello Bot', createdAt: new Date(), user: {
-            _id: 1,
-            name: 'Yash',
-            avatar: 'https://placeimg.com/140/140/any' }
-        }, {_id: 9, text: 'Hello Bot', createdAt: new Date(), 
-            user: { _id: 1, name: 'Yash', avatar: 'https://placeimg.com/140/140/any' }
-        }, {_id: 10, text: 'Hello Bot', createdAt: new Date(), user: {
-            _id: 1,
-            name: 'Yash',
-            avatar: 'https://placeimg.com/140/140/any' }
-        }, {_id: 11, text: 'How are you?', createdAt: new Date(), user: {
-            _id: 1,
-            name: 'Yash',
-            avatar: 'https://placeimg.com/140/140/any' }
-        }, {_id: 12, text: 'I am fine, You?', createdAt: new Date(), user: {
-            _id: 2,
-            name: 'React Native',
-            avatar: 'https://placeimg.com/140/140/any' }
-        }, {_id: 13, text: 'I am fine too, thanks!', createdAt: new Date(), user: {
-            _id: 1,
-            name: 'Yash',
-            avatar: 'https://placeimg.com/140/140/any' }
-        }, {_id: 14, text: "That's great!", createdAt: new Date(), user: {
-            _id: 1,
-            name: 'Yash',
-            avatar: 'https://placeimg.com/140/140/any' }
-        }, {_id: 15, text: 'How is the weather?', createdAt: new Date(), user: {
-            _id: 2,
-            name: 'React Native',
-            avatar: 'https://placeimg.com/140/140/any' }
-        }, {_id: 16, text: 'It has been okayish!', createdAt: new Date(), user: {
-            _id: 1,
-            name: 'Yash',
-            avatar: 'https://placeimg.com/140/140/any' }
-        }, {_id: 17, text: 'Has it been?', createdAt: new Date(), user: {
-            _id: 2,
-            name: 'React Native',
-            avatar: 'https://placeimg.com/140/140/any' }
-        }, {_id: 18, text: 'It is sunny out there!', createdAt: new Date(), user: {
-            _id: 2,
-            name: 'React Native',
-            avatar: 'https://placeimg.com/140/140/any' }
-        }, {
-            _id: 19, text: 'This is a quick reply. Do you love Gifted Chat? (radio) KEEP IT', createdAt: new Date(2020, 5, 10, 21, 52, 30, 0),
-            quickReplies: { type: 'radio', // or 'checkbox',
-                keepIt: true,
-                values: [
-                    {
-                        title: '😋 Yes',
-                        value: 'yes',
-                    },
-                    {
-                        title: '📷 Yes, let me show you with a picture!',
-                        value: 'yes_picture',
-                    },
-                    {
-                        title: '😞 Nope. What?',
-                        value: 'no',
-                    }
-                ]}, user: {_id: 2, name: 'React Native' }
+    const dispatch = useDispatch();
+    
+    const _id = props.navigation.state.params._id
+    const avatar = props.navigation.state.params.avatar
+    const name = props.navigation.state.params.name
+    const receiver_id = props.navigation.state.params.receiver_id
+    const receiver_name = props.navigation.state.params.receiver_name
+    const receiver_imageUrl = props.navigation.state.params.receiver_imageUrl
+
+    const messages = useSelector(state => state.messageReducer.messages).filter(message_id => message_id._id === _id)[0].receivers.filter(receiver => receiver.receiver_id === receiver_id)[0].messages
+
+    const verifyPermissions = async () => {
+        const result = await Permissions.askAsync(Permissions.CAMERA, Permissions.CAMERA_ROLL, Permissions.AUDIO_RECORDING);
+        if (result.status !== "granted") {
+            Alert.alert("Insufficient Permissions", "You need to grant Camera Permission", [{
+                text: 'Okay'
             }])
-    }, [])
+            return false;
+        }
+        return true
+    }
+
+    const takeImageHandler = async () => {
+        const hasPermission = await verifyPermissions();
+        if (!hasPermission) {
+            return
+        }
+        const image = await ImagePicker.launchCameraAsync({
+            allowsEditing: true,
+            aspect: [16, 9],
+            quality: 1
+        })
+        // setPickedImage(image.uri)
+        // props.onImageTaken(image.uri)
+    }
+
+    const takeVideoHandler = async () => {
+        const hasPermission = await verifyPermissions();
+        if (!hasPermission) {
+            return
+        }
+        const video = await ImagePicker.launchCameraAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Videos,
+            allowsEditing: true,
+            aspect: [16, 9],
+            quality: 1
+        })
+        // setPickedImage(image.uri)
+        // props.onImageTaken(image.uri)
+    }
+
+    const openGalleryHandler = async () => {
+        const hasPermission = await verifyPermissions();
+        if (!hasPermission) {
+            return
+        }
+        const gallery = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.All,
+            allowsEditing: true,
+            allowsMultipleSelection: true,
+            quality: 1
+        })
+        // setPickedImage(image.uri)
+        // props.onImageTaken(image.uri)
+    }
+
+    const goToCamera = () => {
+        props.navigation.navigate("Camera", {
+            _id: _id,
+            avatar: avatar,
+            name: name,
+            receiver_id: receiver_id,
+            receiver_name: receiver_name,
+            receiver_imageUrl: receiver_imageUrl
+        })
+    }
+
+    const onChangeText = (event) => {
+        setInputText(event)
+    }
 
     const onSend = (message) => {
+        message[0].sent = true,
+        message[0].received = false
+        // setMessages(GiftedChat.append(messages, message))
         console.log(message)
-        setMessages(GiftedChat.append(messages, message))
+        dispatch(actionTypes.updateMessage(_id, receiver_id, message))
     }
 
     const renderInputToolbar = (props) => {
-        return <InputToolbar {...props} containerStyle={styles.inputToolbarStyle} 
-                    primaryStyle = {{alignItems: 'center', borderColor: Colors.primary,
-                    borderWidth: 1, borderRadius: 40}}
+        return <InputToolbar {...props} containerStyle={styles.inputToolbarStyle}
+                    primaryStyle = {{alignItems: 'flex-end', borderColor: '#888', width: '89%', 
+                    borderWidth: 1, borderRadius: 40, backgroundColor: 'white'}}
                 />;
     }
 
     const renderSend = (props) => {
-        return <Send {...props} 
-                containerStyle = {{alignItems: 'center', justifyContent: 'center'}}
-                textStyle = {{color: Colors.primary, top: 5}} 
+        return <Send {...props}
+                containerStyle = {{alignItems: 'center', justifyContent: 'center', right: 10}}
+                textStyle = {{color: Colors.primary}}
+                children = {<Ionicons name = "md-send" size = {25} color = '#888' />}
                />
     }
 
     const renderBubble = (props) => {
-        return <Bubble {...props} wrapperStyle = {{right: {backgroundColor: Colors.primary, marginBottom: 2},
-                                                    left: {marginBottom: 2}}} />
-    }
-
-    const renderActions = (props) => {
-        return <Actions {...props}
-            containerStyle = {{justifyContent: 'center', alignItems: 'center', top: 5}} 
-            // wrapperStyle = {{borderRadius: 20, justifyContent: 'center', backgroundColor: 'red'}}
-            icon = {() => <Ionicons name = "ios-camera" size = {30} color = {Colors.primary} />}
+        return <Bubble {...props} tickStyle = {{justifyContent: 'center'}} bottomContainerStyle = {{right: {justifyContent: 'space-between'}}}
+        wrapperStyle = {{right: {backgroundColor: Colors.primary, marginBottom: 2, maxWidth: '70%'},
+                        left: {marginBottom: 3, backgroundColor: '#D1EEEE', maxWidth: '70%'}}} renderMessageVideo = {() => {}}
         />
     }
 
-    return (
-        <SafeAreaView style = {{flex: 1, backgroundColor: 'white'}} >
-            <GiftedChat messages = {messages} onSend = {(message) => onSend(message)} 
-                user = {{_id: 1, name: 'Yash', avatar: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg'}} 
-                messagesContainerStyle = {{backgroundColor: 'white', bottom: 20}}  alwaysShowSend scrollToBottom 
-                renderAvatarOnTop renderUsernameOnMessage inverted = {false} renderInputToolbar = {renderInputToolbar} 
-                bottomOffset = {0} renderSend = {renderSend} renderBubble = {renderBubble} renderActions = {renderActions}
+    const renderActions = (props) => {
+        return (
+            <View style = {{flexDirection: 'row', justifyContent: 'flex-start'}} >
+                <Actions {...props}
+                    containerStyle = {{justifyContent: 'center', alignItems: 'center'}}
+                    icon = {() => <Ionicons name = "ios-camera" size = {30} color = '#888' />}
+                    // options = {{"Photo": takeImageHandler, "Video": takeVideoHandler}}
+                    onPressActionButton = {goToCamera}
+                />
+                <Actions {...props}
+                    containerStyle = {{justifyContent: 'center', alignItems: 'center'}}
+                    icon = {() => <Ionicons name = "ios-add" size = {30} color = '#888' style = {{right: 10}} />}
+                    options = {{"Choose from Gallery": openGalleryHandler, "Cancel": () => {}}}
+                />
+            </View>
+        )
+    }
+
+    const renderActionsAgain = (props) => {
+        return <Actions {...props}
+            containerStyle = {{justifyContent: 'center', alignItems: 'center', right: 30}}
+            icon = {() => <Ionicons name = "ios-camera" size = {30} color = '#888' />}
+            onPressActionButton = {takeImageHandler}
+        />
+    }
+
+    const renderComposer = (props) => {
+        return <Composer {...props}
+        // onTextChanged = {(event) => onChangeText(event)} text = {inputText}
+            textInputStyle = {{fontSize: 16, right: 18}} render
+        />
+    }
+
+    const renderMessage = (props) => {
+        return <Message {...props}
+          customTextStyle={{ fontSize: 16, lineHeight: 18, paddingTop: 5, paddingBottom: 0 }} />
+    }
+
+    const renderTime = (props) => {
+        return <Time {...props} timeTextStyle = {{right: {color: '#888'}}}
             />
-        </SafeAreaView>
+    }
+
+    const renderAccessory = (props) => {
+        return (
+            <TouchableOpacity>
+                <View style = {{width: 44, height: 44, borderRadius: 22,
+                                borderWidth: 1, borderColor: "#888",
+                                justifyContent: 'center', alignItems: 'center' }} >
+                    <Ionicons name = "md-mic" size = {25} color = "#888" />
+                </View>
+            </TouchableOpacity>
+        )
+    }
+
+    return (
+        <KeyboardAvoidingView style = {{flex: 1, backgroundColor: 'white'}} >
+            <GiftedChat messages = {messages} onSend = {(message) => onSend(message)}
+                user = {{_id: _id, name: name, avatar: avatar}}
+                messagesContainerStyle = {{backgroundColor: 'white', bottom: 5}} scrollToBottom
+                renderAvatarOnTop inverted = {false} renderInputToolbar = {renderInputToolbar}  renderFooter = {() => null}
+                bottomOffset = {0} renderSend = {renderSend} renderBubble = {renderBubble} renderActions = {renderActions}
+                renderComposer = {renderComposer} renderMessage = {renderMessage} renderAccessory = {renderAccessory}
+                renderTime = {renderTime} infiniteScroll minInputToolbarHeight = {22}
+            />
+        </KeyboardAvoidingView>
     )
 }
 
 ChatDetailScreen.navigationOptions = navData => {
-    // console.log(navData.navigation.state.params.name)
-    const name = navData.navigation.state.params.name
+    const receiver_name = navData.navigation.state.params.receiver_name
+    const receiver_imageUrl = navData.navigation.state.params.receiver_imageUrl
     return {
-        headerTitle: name,
-        headerTitleAlign: 'center',
+        headerTitle: receiver_name,
         headerTintColor: 'white',
+        headerTitleAlign: 'center',
         headerStyle: {
             backgroundColor: Colors.primary,
             elevation: 0
+        },
+        headerRight: () => {
+            return (
+            <TouchableOpacity onPress = {() => navData.navigation.navigate("UserDetail", {name: receiver_name, imageUrl: receiver_imageUrl })}  style = {{right: 10}} >
+                <Ionicons name = "ios-menu" size = {25} color = "white" style = {{}} />
+            </TouchableOpacity>
+            )
         }
     }
 }
@@ -167,13 +224,16 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     inputToolbarStyle: {
-        height: 60,
+        flexDirection: 'row',
         borderTopWidth: 0,
         marginLeft: 5,
         marginRight: 5,
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
+        marginBottom: 3,
+        justifyContent: 'space-between',
+        alignItems: 'flex-end',
+        height: 44,
+        bottom: 2
+    }
 })
 
 export default ChatDetailScreen;

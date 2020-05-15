@@ -1,36 +1,44 @@
 import React from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, Dimensions, PixelRatio } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 import Colors from '../../constants/Colors';
+
+var FONT_SIZE = 15;
+
+if (PixelRatio.get() >= 3) {
+    FONT_SIZE = 20
+}
 
 const EnterNumberScreen = props => {
     return (
         <View style = {styles.container} >
             <View style = {styles.card} >
-                <View style = {{margin: 20}} >
-                    <Text style = {{fontWeight: 'bold', fontSize: 20}} >
+                <View style = {{marginTop: '5%', marginLeft: '8%', marginBottom: 20, height: 20}} >
+                    <Text style = {{fontWeight: 'bold', fontSize: FONT_SIZE, textAlign: 'left'}} >
                         Enter your Mobile Number to Login or Register
                     </Text>
                 </View>
                 <View style = {styles.number} >
-                    <View style = {{borderColor: '#ccc', borderWidth: 1, padding: 10, height: 35, justifyContent: 'center'}} >
+                    <View style = {{borderColor: '#ccc', borderWidth: 1, padding: 10, height: 50, justifyContent: 'center'}} >
                         <Text style = {{fontSize: 18}} >+91</Text>
-                    </View>                    
-                    <TextInput style = {styles.textInput} keyboardType = "number-pad" key maxLength = {10} />
-                </View>
-                <TouchableOpacity onPress = {() => props.navigation.navigate("EnterCode")} >
-                    <View style = {{height: 50, width: 50, borderRadius: 25, backgroundColor: Colors.primary,
-                        left: 290, top: 20, justifyContent: 'center', alignItems: 'center' }}>
-                        <Ionicons name = "md-arrow-forward" size = {27} color = "white" />
                     </View>
-                </TouchableOpacity>
+                    <View  style = {styles.textInput}  >
+                        <TextInput keyboardType = "number-pad" key maxLength = {10}  style = {{fontSize: 18}} />
+                    </View>
+                </View>
+                <View style = {{height: 50, width: 50, borderRadius: 25, backgroundColor: Colors.primary,
+                        left: Dimensions.get("window").width / 1.37, justifyContent: 'center', alignItems: 'center' }} >
+                    <TouchableOpacity onPress = {() => props.navigation.navigate("EnterCode")} >
+                        <Ionicons name = "md-arrow-forward" size = {27} color = "white" />
+                    </TouchableOpacity>
+                </View>
             </View>
             <View style = {{flex: 1, justifyContent: 'flex-end', marginBottom: 30}} >
                 <View style = {{flexDirection: 'row', alignItems: 'flex-end', marginRight: 10}} >
                     <TouchableOpacity onPress = {() => props.navigation.navigate("ConnectSocially")} >
                         <View style = {styles.connectSocially} >
-                            <Text style = {{color: 'white', marginHorizontal: 10, marginVertical: 5, fontSize: 20}}>Connect Socially</Text>
+                            <Text style = {{color: 'white', marginHorizontal: 10, marginVertical: 5, fontSize: FONT_SIZE}}>Connect Socially</Text>
                         </View>
                     </TouchableOpacity>
                 </View>
@@ -57,27 +65,29 @@ const styles = StyleSheet.create({
     },
     card: {
         margin: '10%',
-        height: 180,
+        height: Dimensions.get("window").height / 4.5,
         width: '80%',
         elevation: 5,
         backgroundColor: 'white',
         borderRadius: 10
     },
     number: {
-        marginLeft: 20,
+        width: '85%',
+        marginLeft: 25,
+        marginTop: 10,
         flexDirection: 'row',
-        justifyContent: 'flex-start',
         alignItems: 'center'
     },
     textInput: {
-        marginLeft: 25,
+        marginLeft: 20,
+        width: '70%',
         backgroundColor: 'white',
         borderWidth: 1,
         borderColor: '#ccc',
-        width: 210,
-        height: 35,
+        height: 50,
         fontSize: 18,
-        paddingLeft: 15
+        paddingLeft: 15,
+        justifyContent: 'center'
     },
     connectSocially: {
         justifyContent: 'center',

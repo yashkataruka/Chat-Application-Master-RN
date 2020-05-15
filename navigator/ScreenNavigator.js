@@ -18,6 +18,9 @@ import MiscScreen from '../screens/ChatScreen/MiscScreen';
 import ChatDetailScreen from '../screens/ChatScreen/ChatDetailScreen';
 import ChatsScreen from '../screens/ChatScreen/ChatsScreen';
 import ChatNavigator from './ChatNavigator';
+import CameraScreen from '../screens/ChatScreen/CameraScreen';
+import ImagePreviewScreen from '../screens/ChatScreen/ImagePreviewScreen';
+import UserDetailScreen from '../screens/ChatScreen/UserDetailScreen';
 
 const NumberLoginNavigator = createStackNavigator({
     EnterNumber: {
@@ -151,7 +154,7 @@ const tabScreenConfig = {
         screen: MiscNavigator,
         navigationOptions: {
             tabBarIcon: (tabInfo) => {
-                return <FontAwesome name = 'navicon' size = {30} color = {tabInfo.tintColor}/>
+                return <Ionicons name = 'ios-menu' size = {35} color = {tabInfo.tintColor}/>
             },
             tabBarColor: 'white',
             tabBarLabel: 'Misc'
@@ -174,6 +177,15 @@ const BottomTabNavigator = createBottomTabNavigator(tabScreenConfig, {
     }
 })
 
+const CameraSwitchNavigator = createSwitchNavigator({
+    Camera: {
+        screen: CameraScreen
+    },
+    Image: {
+        screen: ImagePreviewScreen
+    }
+})
+
 const MainNavigator = createStackNavigator({
     Tab: {
         screen: BottomTabNavigator,
@@ -183,6 +195,18 @@ const MainNavigator = createStackNavigator({
     },
     ChatDetail: {
         screen: ChatDetailScreen
+    },
+    UserDetail: {
+        screen: UserDetailScreen,
+        navigationOptions: {
+            headerShown: false
+        }
+    },
+    Camera: {
+        screen: CameraSwitchNavigator,
+        navigationOptions: {
+            headerShown: false
+        }
     }
 })
 
@@ -199,12 +223,12 @@ const styles = StyleSheet.create({
 })
 
 const AuthNavigator = createSwitchNavigator({
-    NumberLogin: {
-        screen: NumberLoginNavigator
-    },
-    EnterCode: {
-        screen: EnterCodeNavigator
-    },
+    // NumberLogin: {
+    //     screen: NumberLoginNavigator
+    // },
+    // EnterCode: {
+    //     screen: EnterCodeNavigator
+    // },
     Main: {
         screen: MainNavigator
     }

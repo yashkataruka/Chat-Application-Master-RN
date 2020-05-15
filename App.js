@@ -1,16 +1,20 @@
-import React from 'react';
+import React, { useReducer } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { enableScreens } from 'react-native-screens';
 import { combineReducers, createStore } from 'redux';
 import { Provider } from 'react-redux'
 
 import AuthNavigator from './navigator/ScreenNavigator';
-import { homeHeaderReducer } from './store/reducers/HomeHeaderDisplay';
+import MessageReducer from './store/reducers/UpdateMessage';
+import UserReducer from './store/reducers/UpdateUsers';
+import ContactReducer from './store/reducers/UpdateContacts';
 
 enableScreens();
 
 const rootReducer = combineReducers({
-  homeHeaderReducer: homeHeaderReducer
+  messageReducer: MessageReducer,
+  userReducer: UserReducer,
+  contactReducer: ContactReducer
 })
 
 const store = createStore(rootReducer)
