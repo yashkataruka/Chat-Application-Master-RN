@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, ImageBackground, StyleSheet, TouchableOpacity } from 'react-native';
-import { MaterialIcons, MaterialCommunityIcons, Octicons } from '@expo/vector-icons';
+import { MaterialIcons, MaterialCommunityIcons, Octicons, Ionicons } from '@expo/vector-icons';
 
 import Colors from '../constants/Colors';
 
@@ -18,11 +18,13 @@ const Chat = (props) => {
                 </View>
                 <View style = {{flexDirection: 'row', justifyContent: 'space-between',alignItems: 'center'}} >
                     {props.message}
-                    <Text>{props.tick ? "✓" : null }</Text>
+                    {props.receivedtick ? <Ionicons name = "ios-checkmark-circle" color = {Colors.primary} size = {13} /> : 
+                        props.seentick ? <Ionicons name = "ios-checkmark-circle-outline" color = {Colors.primary} size = {13} /> : null
+                    }
                 </View>
             </View>
         </TouchableOpacity>
-        <View style = {{height: 10, width: 10, backgroundColor: Colors.primary, borderRadius: 5, marginLeft: '3.6%', top: "-15%"}}/>
+        { props.online ? <View style = {{height: 10, width: 10, backgroundColor: Colors.primary, borderRadius: 5, marginLeft: '3.6%', top: "-15%"}}/> : <View style = {{height: 10, width: 10, backgroundColor: 'white',  borderRadius: 5, marginLeft: '3.6%'}} /> }
         <View style = {{height: 1, width: '80%', marginLeft: '17%', backgroundColor: '#ccc', }} />
         </View>
 

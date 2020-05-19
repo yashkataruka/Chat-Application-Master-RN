@@ -33,7 +33,7 @@ const ImagePreviewScreen = (props) => {
         }
     }, [keyboardDidShowListener, keyboardDidHideListener])
 
-    const finalMessage = [{_id: new Date(), createdAt: new Date(), sent: true, received: false, text: message.trim(), image: props.navigation.state.params.uri,
+    const finalMessage = [{_id: new Date(), createdAt: new Date(), text: message.trim(), image: props.navigation.state.params.uri,
         user: { _id: props.navigation.state.params._id, avatar: props.navigation.state.params.avatar, name: props.navigation.state.params.name }
     }]
 
@@ -43,8 +43,12 @@ const ImagePreviewScreen = (props) => {
     }
 
     return (
-        <View style = {{flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'black'}} >
-            <ImageBackground source = {{uri: props.navigation.state.params.uri}} style = {{position: 'absolute' , left: 0, top: (Dimensions.get("screen").height - Dimensions.get("screen").width * (16/9)) / 2, height: Dimensions.get("screen").width * (16/9), width: '100%', justifyContent: 'flex-end', alignItems: 'center'}}>
+        <View style = {{flex: 1, alignItems: 'center', backgroundColor: 'black'}} >
+            <ImageBackground resizeMode = "contain" source = {{uri: props.navigation.state.params.uri}} style = {{position: 'absolute' , left: 0, top: (Dimensions.get("screen").height - Dimensions.get("screen").width * (16/9)) / 2, height: Dimensions.get("screen").width * (16/9), width: '100%', justifyContent: 'flex-end', alignItems: 'center'}}>
+                <TextInput style = {{ minHeight: 50, width: Dimensions.get("screen").width - 50, bottom: visibleHeight, borderColor: 'white', borderWidth: 1, paddingLeft: 10,
+                                        fontSize: 18, color: 'white', justifyContent: 'flex-end', maxHeight: 250, paddingVertical: 10, borderRadius: 10 }} multiline scrollEnabled
+                                placeholderTextColor = "white" placeholder = "Type a message..." value = {message} onChangeText = {(text) => setMessage(text)}
+                    />
                 <TouchableOpacity style = {{position: 'absolute', right: Dimensions.get("screen").width - 130, bottom: 30}} onPress = {() => props.navigation.navigate("ChatDetail") } >
                         <View style = {{height: 40, width: 110, backgroundColor: Colors.primary, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around', borderWidth: 1, borderColor: 'white', borderRadius: 40}} >
                             <Ionicons name = "md-arrow-back" color = "white" size = {23} style = {{left: 2}} />
@@ -57,10 +61,7 @@ const ImagePreviewScreen = (props) => {
                         <Ionicons name = "md-arrow-forward" color = "white" size = {23} style = {{right: 2}} />
                     </View>
                 </TouchableOpacity>
-                <TextInput style = {{ minHeight: 50, width: Dimensions.get("screen").width - 50, bottom: visibleHeight, borderColor: 'white', borderWidth: 1, paddingLeft: 10,
-                                    fontSize: 18, color: 'white', justifyContent: 'flex-end', maxHeight: 250, paddingVertical: 10, borderRadius: 10 }} multiline scrollEnabled
-                            placeholderTextColor = "white" placeholder = "Type a message..." value = {message} onChangeText = {(text) => setMessage(text)}
-                />
+                
             </ImageBackground>
         </View>
     )

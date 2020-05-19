@@ -21,6 +21,9 @@ import ChatNavigator from './ChatNavigator';
 import CameraScreen from '../screens/ChatScreen/CameraScreen';
 import ImagePreviewScreen from '../screens/ChatScreen/ImagePreviewScreen';
 import UserDetailScreen from '../screens/ChatScreen/UserDetailScreen';
+import VideoScreen from '../screens/ChatScreen/VideoScreen';
+import AudioScreen from '../screens/ChatScreen/AudioScreen';
+import ForwardScreen from '../screens/ChatScreen/ForwardScreen';
 
 const NumberLoginNavigator = createStackNavigator({
     EnterNumber: {
@@ -196,6 +199,9 @@ const MainNavigator = createStackNavigator({
     ChatDetail: {
         screen: ChatDetailScreen
     },
+    Forward: {
+        screen: ForwardScreen
+    },
     UserDetail: {
         screen: UserDetailScreen,
         navigationOptions: {
@@ -207,6 +213,15 @@ const MainNavigator = createStackNavigator({
         navigationOptions: {
             headerShown: false
         }
+    },
+    VideoScreen: {
+        screen: VideoScreen,
+        navigationOptions: {
+            headerShown: false
+        }
+    },
+    Audio: {
+        screen: AudioScreen
     }
 })
 

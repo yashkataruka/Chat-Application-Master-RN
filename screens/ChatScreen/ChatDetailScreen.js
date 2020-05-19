@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, SafeAreaView, ActivityIndicator,
-    TouchableOpacity, Platform, KeyboardAvoidingView, Alert, Dimensions, RecyclerViewBackedScrollViewBase } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, SafeAreaView, ActivityIndicator, Modal, Button, Clipboard,
+    TouchableOpacity, Platform, KeyboardAvoidingView, Alert, Dimensions, Slider } from 'react-native';
 import { GiftedChat, InputToolbar, Send, Bubble, Actions, Composer, Time, Message } from 'react-native-gifted-chat';
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons, MaterialIcons, Foundation } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
 import { Picker } from 'emoji-mart';
 import { useSelector, useDispatch } from 'react-redux';
+import { Video, Audio } from 'expo-av';
+import Lightbox from 'react-native-lightbox';
+import { connectActionSheet } from '@expo/react-native-action-sheet';
 
 import Colors from '../../constants/Colors';
 import * as actionTypes from '../../store/actions/UpdateMessage';
@@ -15,6 +18,8 @@ const ChatDetailScreen = props => {
 
     const [messages1, setMessages] = useState([]);
     const [inputText, setInputText] = useState("");
+    const [recording, setRecording] = useState(false);
+    const [recordingInstance, setRecordingInstance] = useState(null)
 
     const dispatch = useDispatch();
     
@@ -78,6 +83,34 @@ const ChatDetailScreen = props => {
             allowsMultipleSelection: true,
             quality: 1
         })
+        if (gallery.type === "image") {
+            props.navigation.navigate("Image", {
+                uri: gallery.uri,
+                height: gallery.height,
+                width: gallery.width,
+                _id: _id,
+                avatar: avatar,
+                name: name,
+                receiver_id: receiver_id,
+                receiver_name: receiver_name,
+                receiver_imageUrl: receiver_imageUrl
+            })
+        }
+        else if (gallery.type === "video") {
+            props.navigation.navigate("VideoScreen", {
+                send_message: true,
+                uri: gallery.uri,
+                height: gallery.height,
+                width: gallery.width,
+                _id: _id,
+                avatar: avatar,
+                name: name,
+                receiver_id: receiver_id,
+                receiver_name: receiver_name,
+                receiver_imageUrl: receiver_imageUrl
+            })
+        }
+        // console.log(gallery)
         // setPickedImage(image.uri)
         // props.onImageTaken(image.uri)
     }
@@ -98,18 +131,51 @@ const ChatDetailScreen = props => {
     }
 
     const onSend = (message) => {
-        message[0].sent = true,
-        message[0].received = false
         // setMessages(GiftedChat.append(messages, message))
-        console.log(message)
         dispatch(actionTypes.updateMessage(_id, receiver_id, message))
     }
 
+    const stopAudioRecording = async () => {
+        setRecording(false)
+        const status = await recordingInstance.getStatusAsync()
+        await recordingInstance.stopAndUnloadAsync()
+        const uri = recordingInstance.getURI()
+        props.navigation.navigate("Audio", {
+            uri: uri, 
+            send_message: true, 
+            _id: _id,
+            avatar: avatar,
+            name: name,
+            receiver_id: receiver_id,
+            receiver_name: receiver_name,
+            receiver_imageUrl: receiver_imageUrl})
+    }
+
     const renderInputToolbar = (props) => {
-        return <InputToolbar {...props} containerStyle={styles.inputToolbarStyle}
+        if (!recording)
+        {
+            return (
+                <InputToolbar {...props} containerStyle={styles.inputToolbarStyle}
                     primaryStyle = {{alignItems: 'flex-end', borderColor: '#888', width: '89%', 
                     borderWidth: 1, borderRadius: 40, backgroundColor: 'white'}}
-                />;
+                />
+            )
+        }
+        else
+        {
+            return (
+                <View style = {{alignItems: 'center', backgroundColor: 'white', bottom: 100, width: '100%', padding: 20}} >
+                    <Ionicons name = "ios-mic" size = {26}/>
+                    <View style = {{marginVertical: 10}} >
+                        <Text>Recording Audio using Mic...</Text>
+                    </View>
+                    <View style = {{width: 80}} >
+                        <Button title = "Stop" color = {Colors.primary} onPress = {stopAudioRecording} />
+                    </View>
+                </View>
+            )
+        }
+        
     }
 
     const renderSend = (props) => {
@@ -120,10 +186,85 @@ const ChatDetailScreen = props => {
                />
     }
 
+    const videoScreen = (uri) => {
+        props.navigation.navigate("VideoScreen", {uri: uri})
+    }
+
+    const audioScreen = (audio, name) => {
+        props.navigation.navigate("Audio", {
+            uri: audio,
+            name: name
+        })
+    }
+
+    const DEFAULT_OPTION_TITLES = ['Foward', 'Copy Text', 'Cancel'];
+
+    const forwardMessage = (currentMessage) => {
+        props.navigation.navigate("Forward", {
+            message: currentMessage,
+            _id: _id,
+            name: name,
+            avatar: avatar
+        })
+    }
+
+    const _onOpenActionSheet = (currentMessage) => {
+        const options = DEFAULT_OPTION_TITLES
+        const destructiveButtonIndex = 2;
+        const cancelButtonIndex = 2;
+        props.showActionSheetWithOptions(
+        {
+            options,
+            cancelButtonIndex,
+            destructiveButtonIndex,
+        },
+        buttonIndex => {
+            if (buttonIndex == 0) {
+                forwardMessage(currentMessage)
+            }
+            else if (buttonIndex == 1){
+                Clipboard.setString(currentMessage.text);
+            }
+        },
+        );
+      };
+
     const renderBubble = (props) => {
         return <Bubble {...props} tickStyle = {{justifyContent: 'center'}} bottomContainerStyle = {{right: {justifyContent: 'space-between'}}}
         wrapperStyle = {{right: {backgroundColor: Colors.primary, marginBottom: 2, maxWidth: '70%'},
-                        left: {marginBottom: 3, backgroundColor: '#D1EEEE', maxWidth: '70%'}}} renderMessageVideo = {() => {}}
+                        left: {marginBottom: 3, backgroundColor: '#D1EEEE', maxWidth: '70%'}}} 
+                        renderMessageVideo = {() => {
+                            return (
+                                <View style = {props.containerStyle} >
+                                    <TouchableOpacity onPress = {() => videoScreen(props.currentMessage.video)} >
+                                        <Video source = {{uri: props.currentMessage.video }} style = {{width: 150, height: 100, borderRadius: 13, margin: 3}} resizeMode = "contain"
+                                            {...props.videoProps} />
+                                    </TouchableOpacity>
+                                </View>
+                            )
+                        }}
+                        renderMessageAudio = {() => {
+                            return (
+                                <View style = {{alignItems: 'center', marginTop: 10}} >
+                                    <Ionicons name = "ios-play" color = "black" size = {30} onPress = {() => audioScreen(props.currentMessage.audio, props.currentMessage.user.name)} />
+                                </View>
+                            )
+                        }} 
+                        onLongPress = {() => _onOpenActionSheet(props.currentMessage)}
+                        renderTicks = {() => {
+                            if (props.currentMessage.received)
+                            {
+                                return (
+                                    <Ionicons name = "ios-checkmark-circle" color = "white" size = {11} style = {{right: 4}} />
+                                )
+                            }
+                            else if (props.currentMessage.sent) {
+                                return (
+                                    <Ionicons name = "ios-checkmark-circle-outline" color = "white" size = {11} style = {{right: 4}} />
+                                )
+                            }
+                        }}
+    
         />
     }
 
@@ -170,9 +311,23 @@ const ChatDetailScreen = props => {
             />
     }
 
+    const startAudioRecording = async () => {
+        setRecording(true)
+        const recordingInst = new Audio.Recording()
+        setRecordingInstance(recordingInst)
+        try {
+            await recordingInst.prepareToRecordAsync(Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY)
+            await recordingInst.startAsync()
+        }
+        catch(err) {
+            setRecording(false)
+            console.log(err)
+        }
+    }
+
     const renderAccessory = (props) => {
         return (
-            <TouchableOpacity>
+            <TouchableOpacity onPress = {() => console.log("Audio")} onLongPress = {startAudioRecording} >
                 <View style = {{width: 44, height: 44, borderRadius: 22,
                                 borderWidth: 1, borderColor: "#888",
                                 justifyContent: 'center', alignItems: 'center' }} >
@@ -181,6 +336,10 @@ const ChatDetailScreen = props => {
             </TouchableOpacity>
         )
     }
+
+    useEffect(() => {
+        dispatch(actionTypes.updateTicks(_id, receiver_id))
+    }, [messages])
 
     return (
         <KeyboardAvoidingView style = {{flex: 1, backgroundColor: 'white'}} >
@@ -199,8 +358,16 @@ const ChatDetailScreen = props => {
 ChatDetailScreen.navigationOptions = navData => {
     const receiver_name = navData.navigation.state.params.receiver_name
     const receiver_imageUrl = navData.navigation.state.params.receiver_imageUrl
+    const lastSeenTime = navData.navigation.state.params.lastSeenTime
     return {
-        headerTitle: receiver_name,
+        headerTitle: () => {
+            return (
+            <View style = {{alignItems: 'center', top: 5}} >
+                <Text style = {{color: 'white', fontSize: 20, fontWeight: 'bold'}} >{receiver_name}</Text>
+                {lastSeenTime === "online" ? <Text style = {{color: 'white'}}>online</Text> : <Text style = {{color: 'white'}}>last seen at {lastSeenTime}</Text> }
+            </View>
+            )
+        },
         headerTintColor: 'white',
         headerTitleAlign: 'center',
         headerStyle: {
@@ -236,4 +403,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default ChatDetailScreen;
+export default connectActionSheet(ChatDetailScreen);

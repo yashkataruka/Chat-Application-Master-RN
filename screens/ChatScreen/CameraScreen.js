@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Dimensions, Platform, PixelRatio, Switch } from 'react-native';
 import * as Permissions from 'expo-permissions';
 import { Camera } from 'expo-camera'
-import { Ionicons, MaterialIcons, Feather} from '@expo/vector-icons'
+import { Ionicons, FontAwesome, Feather} from '@expo/vector-icons'
 
 import Colors from '../../constants/Colors';
 
@@ -111,24 +111,20 @@ const CameraScreen = props => {
         else if (camera) {
             setRecording(true)
             let video = await camera.recordAsync({quality: Camera.Constants.VideoQuality['1080p']});
-            console.log(video)
+            props.navigation.navigate("VideoScreen", {uri: video.uri, send_message: true, height: video.height, 
+                width: video.width,
+                _id: props.navigation.state.params._id,
+                avatar: props.navigation.state.params.avatar,
+                name: props.navigation.state.params.name,
+                receiver_id: props.navigation.state.params.receiver_id,
+                receiver_name: props.navigation.state.params.receiver_name,
+                receiver_imageUrl: props.navigation.state.params.receiver_imageUrl})
         }
     };
 
     if (!verifyPermissions()) {
         return <View><Text>Permissions not granted</Text></View>
     }
-
-    // <View style={{position: 'absolute', top: 0, left: 50, width:Dimensions.get("screen").width - 100 }} >
-    //     <Text style={{color: 'white', fontSize: 20, textAlign: 'center', fontWeight: 'bold'}} >Picture quality</Text>
-    //     <View style = {{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}} >
-    //         <Ionicons name="ios-arrow-back" size={40} color="white" onPress={previousPictureSize} style={{ padding: 6 }} />
-    //         <View>
-    //             <Text style = {{color: 'white', fontSize: 20}} >{pictureSize}</Text>
-    //         </View>
-    //         <Ionicons name="ios-arrow-forward" size={40} color="white" onPress={nextPictureSize} style={{ padding: 6 }} />
-    //     </View>
-    // </View>
 
     else {
         return (
@@ -139,7 +135,7 @@ const CameraScreen = props => {
                         // onCameraReady={collectPictureSizes} pictureSize = {pictureSize}
                 >
                     {clicking ? <Text style = {{ fontSize: FONT_SIZE, color: 'white', textAlign: 'center', bottom: '30%'}} >Loading Preview...</Text> : null }
-                    <View style = {{alignItems: 'flex-start', right: Dimensions.get("screen").width / 3 }} >
+                    <View style = {{alignItems: 'flex-start', right: Dimensions.get("screen").width / 3.5 }} >
                         <Text style = {{color: 'white', fontSize: 22}} >Switch Mode</Text>
                         <Text></Text>
                         <Text style = {{color: 'white'}} >Camera</Text>
@@ -166,7 +162,7 @@ const CameraScreen = props => {
                         </View>
                         <View style = {{alignItems: 'center', justifyContent: 'center'}} >
                             <TouchableOpacity onPress = {camera_ ? snap : video_snap} >
-                            {camera_ ? <Ionicons name = "ios-camera" size = {70} color = "white" /> : <Ionicons name = "ios-videocam" size = {70} color = "white" /> }
+                            {camera_ ? <Ionicons name = "ios-camera" size = {70} color = "white" /> : !recording ? <FontAwesome name = "circle" size = {65} color = "white" /> : <FontAwesome name = "stop-circle" color = "#ff726f" size = {65} /> }
                             </TouchableOpacity>
                         </View>
                         <View style = {{height: 40, width: 40, borderRadius: 25, borderColor: 'white', borderWidth: 1, alignItems: 'center', justifyContent: 'center'}} >
@@ -180,14 +176,6 @@ const CameraScreen = props => {
         )
     }
 }
-
-{/* <View style={{ flex: 1, flexDirection: 'row' }}>
-            <TouchableOpacity style={{ flex: 0.1, alignSelf: 'flex-end', alignItems: 'center' }} onPress={() => {
-                            setType( type === Camera.Constants.Type.back ? Camera.Constants.Type.front : Camera.Constants.Type.back) }}>
-                <Text style={{ fontSize: 18, marginBottom: 10, color: 'white' }}> Flip </Text>
-        </TouchableOpacity>
-        </View>
-    </Camera> */}
 
 const styles = StyleSheet.create({
     coontainer: {

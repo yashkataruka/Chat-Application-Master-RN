@@ -3,27 +3,32 @@ import { StyleSheet, Text, View } from 'react-native';
 import { enableScreens } from 'react-native-screens';
 import { combineReducers, createStore } from 'redux';
 import { Provider } from 'react-redux'
+import { ActionSheetProvider } from '@expo/react-native-action-sheet';
 
 import AuthNavigator from './navigator/ScreenNavigator';
 import MessageReducer from './store/reducers/UpdateMessage';
 import UserReducer from './store/reducers/UpdateUsers';
 import ContactReducer from './store/reducers/UpdateContacts';
+import LastSeenReducer from './store/reducers/UpdateLastSeen';
 
 enableScreens();
 
 const rootReducer = combineReducers({
   messageReducer: MessageReducer,
   userReducer: UserReducer,
-  contactReducer: ContactReducer
+  contactReducer: ContactReducer,
+  lastSeenReducer: LastSeenReducer
 })
 
 const store = createStore(rootReducer)
 
 export default function App() {
   return (
-    <Provider store = {store} >
-      <AuthNavigator />
-    </Provider>
+    <ActionSheetProvider>
+      <Provider store = {store} >
+        <AuthNavigator />
+      </Provider>
+    </ActionSheetProvider>
   );
 }
 
