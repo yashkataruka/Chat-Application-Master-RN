@@ -5,6 +5,7 @@ import { createStackNavigator } from 'react-navigation-stack'
 import { createBottomTabNavigator } from 'react-navigation-tabs'
 import { Ionicons, MaterialCommunityIcons, FontAwesome } from '@expo/vector-icons'
 import { useSelector } from 'react-redux';
+import Screens from '../components/Screens'
 
 import EnterNumberScreen from '../screens/Auth/EnterNumberScreen';
 import EnterCodeScreen from '../screens/Auth/EnterCodeScreen';
@@ -199,12 +200,13 @@ const styles = StyleSheet.create({
 })
 
 const AuthNavigator = createSwitchNavigator({
-    // NumberLogin: {
-    //     screen: NumberLoginNavigator
-    // },
-    // EnterCode: {
-    //     screen: EnterCodeNavigator
-    // },
+
+   /* NumberLogin: {
+        screen: NumberLoginNavigator
+     },
+     EnterCode: {
+         screen: EnterCodeNavigator
+     },*/
     Main: {
         screen: MainNavigator
     }

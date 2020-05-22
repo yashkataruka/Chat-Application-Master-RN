@@ -4,6 +4,10 @@ import { Ionicons } from '@expo/vector-icons';
 import { createAppContainer } from 'react-navigation';
 import { createMaterialTopTabNavigator } from 'react-navigation-tabs';
 import { createStackNavigator } from 'react-navigation-stack';
+import {Picker} from '@react-native-community/picker';
+import Barcode from '../screens/ChatScreen/Barcode';
+import GroupDetails from '../screens/ChatScreen/GroupDetails';
+import Broadcast from '../screens/ChatScreen/Broadcast';
 
 import Colors from '../constants/Colors';
 import ChatsScreen from '../screens/ChatScreen/ChatsScreen';
@@ -12,6 +16,8 @@ import NearbyScreen from '../screens/ChatScreen/NearbyScreen';
 import ActiveScreen from '../screens/ChatScreen/ActiveScreen';
 import ChatDetailScreen from '../screens/ChatScreen/ChatDetailScreen';
 import CustomHeader from '../components/Header'
+import NewChat from '../screens/ChatScreen/NewChat'
+import NewGroup from '../screens/ChatScreen/NewGroup'
 
 
 const homeScreenConfig = {
@@ -50,7 +56,7 @@ const HomeNavigator = createMaterialTopTabNavigator(homeScreenConfig, {
 const ChatNavigator = createStackNavigator({
     Chats: {
         screen: HomeNavigator,
-        navigationOptions: {
+        navigationOptions:({navigation}) => ({
             headerTintColor: 'white',
             
             headerTitle:'Home',
@@ -60,13 +66,94 @@ const ChatNavigator = createStackNavigator({
                 elevation: 0,
                 backgroundColor: Colors.primary
             },
-            headerRight: ({navigation}) => {
-                return (
-                    <CustomHeader/>
-                )
-            }
+            headerRight:<CustomHeader nav = {navigation}/>
+        })
+    },
+    NewChat: {
+        screen: NewChat,
+        navigationOptions: {
+            headerTintColor: 'white',
+            
+            headerTitle:'New Chat',
+
+            headerTitleAlign: 'center',
+            headerStyle: {
+                elevation: 0,
+                backgroundColor: Colors.primary
+            },
         }
-    }
+    },
+    NewGroup: {
+        screen: NewGroup,
+        navigationOptions: {
+            headerTintColor: 'white',
+            
+            headerTitle:()=>(
+                <View style = {{alignItems:'center'}}>
+                  <Text style = {{fontSize:18,fontWeight:"bold",color:'#fff'}}>New Group</Text>
+                  <Text style = {{color:'#fff'}}>Add Participants</Text>
+                </View>
+              ),
+
+            headerTitleAlign: 'center',
+            headerStyle: {
+                elevation: 0,
+                backgroundColor: Colors.primary
+            },
+        }
+    },
+    Broadcast: {
+        screen: Broadcast,
+        navigationOptions: {
+            headerTintColor: 'white',
+            
+            headerTitle:()=>(
+                <View style = {{alignItems:'center'}}>
+                  <Text style = {{fontSize:18,fontWeight:"bold",color:'#fff'}}>Broadcast</Text>
+                  <Text style = {{color:'#fff'}}>Add Participants</Text>
+                </View>
+              ),
+
+            headerTitleAlign: 'center',
+            headerStyle: {
+                elevation: 0,
+                backgroundColor: Colors.primary
+            },
+        }
+    },
+    GroupDetails: {
+        screen: GroupDetails,
+        navigationOptions: {
+            headerTintColor: 'white',
+            
+            headerTitle:()=>(
+                <View style = {{alignItems:'center'}}>
+                  <Text style = {{fontSize:18,fontWeight:"bold",color:'#fff'}}>New Group</Text>
+                  <Text style = {{color:'#fff'}}>Edit Group Details</Text>
+                </View>
+              ),
+
+            headerTitleAlign: 'center',
+            headerStyle: {
+                elevation: 0,
+                backgroundColor: Colors.primary
+            },
+        }
+    },
+    Barcode: {
+        screen: Barcode,
+        navigationOptions: {
+            headerTintColor: 'white',
+            
+            headerTitle:'Scan',
+
+            headerTitleAlign: 'center',
+            headerStyle: {
+                elevation: 0,
+                backgroundColor: Colors.primary
+            },
+        }
+    },
 })
 
 export default createAppContainer(ChatNavigator)
