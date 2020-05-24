@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import {View, Text, ImageBackground, TextInput, Dimensions, TouchableOpacity, KeyboardAvoidingView, DeviceEventEmitter, Keyboard} from 'react-native';
+import {View, Text, ImageBackground, TextInput, Dimensions, TouchableOpacity, KeyboardAvoidingView, DeviceEventEmitter, Keyboard, Alert} from 'react-native';
 import { Ionicons } from '@expo/vector-icons'
 import { useSelector, useDispatch } from 'react-redux';
+import uuid from 'uuid';
+import * as MediaLibrary from 'expo-media-library';
 
 import Colors from '../../constants/Colors';
 import * as actionTypes from '../../store/actions/UpdateMessage';
@@ -33,11 +35,18 @@ const ImagePreviewScreen = (props) => {
         }
     }, [keyboardDidShowListener, keyboardDidHideListener])
 
-    const finalMessage = [{_id: new Date(), createdAt: new Date(), text: message.trim(), image: props.navigation.state.params.uri,
+    const finalMessage = [{_id: uuid.v4(), createdAt: new Date(), text: message.trim(), image: props.navigation.state.params.uri,
         user: { _id: props.navigation.state.params._id, avatar: props.navigation.state.params.avatar, name: props.navigation.state.params.name }
     }]
 
     const onPress = () => {
+        MediaLibrary.saveToLibraryAsync(props.navigation.state.params.uri)
+        .then(() => {
+            Alert.alert("Download Complete!", "Your Image has been downloaded", [{text: "OK", style: "cancel"}]);
+        })
+        .catch(err => {
+            console.log(err)
+        })
         dispatch(actionTypes.updateMessage(props.navigation.state.params._id, props.navigation.state.params.receiver_id, finalMessage)) 
         props.navigation.navigate("ChatDetail")
     }

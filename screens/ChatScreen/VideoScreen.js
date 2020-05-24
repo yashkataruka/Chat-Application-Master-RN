@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Dimensions, TouchableOpacity, TextInput, Keyboard } from 'react-native';
+import { View, Text, Dimensions, TouchableOpacity, TextInput, Keyboard, Alert } from 'react-native';
 import { Video } from 'expo-av'
 import { Ionicons } from '@expo/vector-icons';
 import { useDispatch } from 'react-redux';
+import uuid from 'uuid';
+import * as MediaLibrary from 'expo-media-library';
 
 import Colors from '../../constants/Colors';
 import * as actionTypes from '../../store/actions/UpdateMessage';
@@ -26,7 +28,7 @@ const VideoScreen = (props) => {
     const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', keyboardDidShow.bind(this))
     const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', keyboardDidHide.bind(this))
 
-    const finalMessage = [{_id: new Date(), createdAt: new Date(), text: message.trim(), video: props.navigation.state.params.uri,
+    const finalMessage = [{_id: uuid.v4(), createdAt: new Date(), text: message.trim(), video: props.navigation.state.params.uri,
         user: { _id: props.navigation.state.params._id, avatar: props.navigation.state.params.avatar, name: props.navigation.state.params.name }
     }]
 
@@ -40,6 +42,13 @@ const VideoScreen = (props) => {
     // console.log(finalMessage)
 
     const onPress = () => {
+        MediaLibrary.saveToLibraryAsync(props.navigation.state.params.uri)
+        .then(() => {
+            Alert.alert("Download Complete!", "Your Video has been downloaded", [{text: "OK", style: "cancel"}]);
+        })
+        .catch(err => {
+            console.log(err)
+        })
         dispatch(actionTypes.updateMessage(props.navigation.state.params._id, props.navigation.state.params.receiver_id, finalMessage)) 
         props.navigation.navigate("ChatDetail")
     }

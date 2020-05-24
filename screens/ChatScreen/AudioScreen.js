@@ -3,6 +3,7 @@ import { StyleSheet, Dimensions, TouchableOpacity, View, Text, ActivityIndicator
 import { Ionicons, MaterialCommunityIcons, MaterialIcons, Feathers } from '@expo/vector-icons'
 import { Audio } from 'expo-av'
 import { useDispatch } from 'react-redux';
+import uuid from 'uuid';
 
 import * as actionTypes from '../../store/actions/UpdateMessage';
 import Colors from '../../constants/Colors';
@@ -77,7 +78,7 @@ const AudioScreen = (props) => {
         }
     }, [playsound])
 
-    const finalMessage = [{_id: new Date(), createdAt: new Date(), text: message.trim(), audio: props.navigation.state.params.uri,
+    const finalMessage = [{_id: uuid.v4(), createdAt: new Date(), text: message.trim(), audio: props.navigation.state.params.uri,
         user: { _id: props.navigation.state.params._id, avatar: props.navigation.state.params.avatar, name: props.navigation.state.params.name }
     }]
 

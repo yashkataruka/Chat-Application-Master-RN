@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, StyleSheet, ScrollView, SafeAreaView, ActivityIndicator, Modal, Button, Clipboard,
     TouchableOpacity, Platform, KeyboardAvoidingView, Alert, Dimensions, Slider } from 'react-native';
 import { GiftedChat, InputToolbar, Send, Bubble, Actions, Composer, Time, Message } from 'react-native-gifted-chat';
@@ -10,14 +10,15 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Video, Audio } from 'expo-av';
 import Lightbox from 'react-native-lightbox';
 import { connectActionSheet } from '@expo/react-native-action-sheet';
+import * as FileSystem from 'expo-file-system'
+import * as MediaLibrary from 'expo-media-library';
+import uuid from 'uuid';
 
 import Colors from '../../constants/Colors';
 import * as actionTypes from '../../store/actions/UpdateMessage';
 
 const ChatDetailScreen = props => {
 
-    const [messages1, setMessages] = useState([]);
-    const [inputText, setInputText] = useState("");
     const [recording, setRecording] = useState(false);
     const [recordingInstance, setRecordingInstance] = useState(null)
 
@@ -41,35 +42,6 @@ const ChatDetailScreen = props => {
             return false;
         }
         return true
-    }
-
-    const takeImageHandler = async () => {
-        const hasPermission = await verifyPermissions();
-        if (!hasPermission) {
-            return
-        }
-        const image = await ImagePicker.launchCameraAsync({
-            allowsEditing: true,
-            aspect: [16, 9],
-            quality: 1
-        })
-        // setPickedImage(image.uri)
-        // props.onImageTaken(image.uri)
-    }
-
-    const takeVideoHandler = async () => {
-        const hasPermission = await verifyPermissions();
-        if (!hasPermission) {
-            return
-        }
-        const video = await ImagePicker.launchCameraAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Videos,
-            allowsEditing: true,
-            aspect: [16, 9],
-            quality: 1
-        })
-        // setPickedImage(image.uri)
-        // props.onImageTaken(image.uri)
     }
 
     const openGalleryHandler = async () => {
@@ -110,9 +82,6 @@ const ChatDetailScreen = props => {
                 receiver_imageUrl: receiver_imageUrl
             })
         }
-        // console.log(gallery)
-        // setPickedImage(image.uri)
-        // props.onImageTaken(image.uri)
     }
 
     const goToCamera = () => {
@@ -124,10 +93,6 @@ const ChatDetailScreen = props => {
             receiver_name: receiver_name,
             receiver_imageUrl: receiver_imageUrl
         })
-    }
-
-    const onChangeText = (event) => {
-        setInputText(event)
     }
 
     const onSend = (message) => {
@@ -199,6 +164,8 @@ const ChatDetailScreen = props => {
 
     const DEFAULT_OPTION_TITLES = ['Foward', 'Copy Text', 'Cancel'];
 
+    const DEFAULT_OPTION_TITLES_2 = ['Download', 'Foward', 'Copy Text', 'Cancel']
+
     const forwardMessage = (currentMessage) => {
         props.navigation.navigate("Forward", {
             message: currentMessage,
@@ -209,25 +176,104 @@ const ChatDetailScreen = props => {
     }
 
     const _onOpenActionSheet = (currentMessage) => {
-        const options = DEFAULT_OPTION_TITLES
-        const destructiveButtonIndex = 2;
-        const cancelButtonIndex = 2;
-        props.showActionSheetWithOptions(
-        {
-            options,
-            cancelButtonIndex,
-            destructiveButtonIndex,
-        },
-        buttonIndex => {
-            if (buttonIndex == 0) {
-                forwardMessage(currentMessage)
-            }
-            else if (buttonIndex == 1){
-                Clipboard.setString(currentMessage.text);
-            }
-        },
-        );
-      };
+        if (currentMessage.video || currentMessage.image) {
+            const options = DEFAULT_OPTION_TITLES_2
+            const destructiveButtonIndex = 3;
+            const cancelButtonIndex = 3;
+            props.showActionSheetWithOptions({
+                    options,
+                    cancelButtonIndex,
+                    destructiveButtonIndex,
+                },
+                buttonIndex => {
+                    if (buttonIndex == 0) {
+                        const hasPermission = verifyPermissions();
+                        if (hasPermission) {
+                            if (currentMessage.video) {
+                                if (currentMessage.video.slice(0, 4) === "file")
+                                {
+                                    MediaLibrary.saveToLibraryAsync(currentMessage.video)
+                                    .then(() => {
+                                        Alert.alert("Download Complete!", "Your Video has been downloaded", [{text: "OK", style: "cancel"}]);
+                                    })
+                                    .catch(err => {
+                                        console.log(err)
+                                    })
+                                }
+                                else {
+                                    FileSystem.downloadAsync(currentMessage.video, FileSystem.cacheDirectory + uuid.v4() + '.mp4')
+                                    .then(( {uri} ) => {
+                                        MediaLibrary.saveToLibraryAsync(uri)
+                                        .then(() => {
+                                            Alert.alert("Download Complete!", "Your Video has been downloaded", [{text: "OK", style: "cancel"}]);
+                                        })
+                                        .catch(err => {
+                                            console.log(err)
+                                        })
+                                    })
+                                    .catch(err => {
+                                        console.log(err)
+                                    })
+                                }
+                            }
+                            if (currentMessage.image) {
+                                if (currentMessage.image.slice(0, 4) === "file")
+                                {
+                                    MediaLibrary.saveToLibraryAsync(currentMessage.image)
+                                    .then(() => {
+                                        Alert.alert("Download Complete!", "Your Image has been downloaded", [{text: "OK", style: "cancel"}]);
+                                    })
+                                    .catch(err => {
+                                        console.log(err)
+                                    })
+                                }
+                                else {
+                                    FileSystem.downloadAsync(currentMessage.image, FileSystem.cacheDirectory + uuid.v4() + '.jpg')
+                                    .then(( {uri} ) => {
+                                        MediaLibrary.saveToLibraryAsync(uri)
+                                        .then(() => {
+                                            Alert.alert("Download Complete!", "Your Image has been downloaded", [{text: "OK", style: "cancel"}]);
+                                        })
+                                        .catch(err => {
+                                            console.log(err)
+                                        })
+                                    })
+                                    .catch(err => {
+                                        console.log(err)
+                                    })
+                                }
+                            }
+                        }
+                    }
+                    else if (buttonIndex == 1) {
+                        forwardMessage(currentMessage)
+                    }
+                    else if (buttonIndex == 2){
+                        Clipboard.setString(currentMessage.text);
+                    }
+                },
+            );
+        }
+        else {
+            const options = DEFAULT_OPTION_TITLES
+            const destructiveButtonIndex = 2;
+            const cancelButtonIndex = 2;
+            props.showActionSheetWithOptions({
+                    options,
+                    cancelButtonIndex,
+                    destructiveButtonIndex,
+                },
+                buttonIndex => {
+                    if (buttonIndex == 0) {
+                        forwardMessage(currentMessage)
+                    }
+                    else if (buttonIndex == 1){
+                        Clipboard.setString(currentMessage.text);
+                    }
+                },
+            );
+        }
+    };
 
     const renderBubble = (props) => {
         return <Bubble {...props} tickStyle = {{justifyContent: 'center'}} bottomContainerStyle = {{right: {justifyContent: 'space-between'}}}
@@ -286,18 +332,9 @@ const ChatDetailScreen = props => {
         )
     }
 
-    const renderActionsAgain = (props) => {
-        return <Actions {...props}
-            containerStyle = {{justifyContent: 'center', alignItems: 'center', right: 30}}
-            icon = {() => <Ionicons name = "ios-camera" size = {30} color = '#888' />}
-            onPressActionButton = {takeImageHandler}
-        />
-    }
-
     const renderComposer = (props) => {
         return <Composer {...props}
-        // onTextChanged = {(event) => onChangeText(event)} text = {inputText}
-            textInputStyle = {{fontSize: 16, right: 18}} render
+            textInputStyle = {{fontSize: 16, right: 18}}
         />
     }
 
@@ -341,6 +378,7 @@ const ChatDetailScreen = props => {
         dispatch(actionTypes.updateTicks(_id, receiver_id))
     }, [messages])
 
+
     return (
         <KeyboardAvoidingView style = {{flex: 1, backgroundColor: 'white'}} >
             <GiftedChat messages = {messages} onSend = {(message) => onSend(message)}
@@ -359,12 +397,13 @@ ChatDetailScreen.navigationOptions = navData => {
     const receiver_name = navData.navigation.state.params.receiver_name
     const receiver_imageUrl = navData.navigation.state.params.receiver_imageUrl
     const lastSeenTime = navData.navigation.state.params.lastSeenTime
+    // const lastSeenShowing = new D
     return {
         headerTitle: () => {
             return (
             <View style = {{alignItems: 'center', top: 5}} >
                 <Text style = {{color: 'white', fontSize: 20, fontWeight: 'bold'}} >{receiver_name}</Text>
-                {lastSeenTime === "online" ? <Text style = {{color: 'white'}}>online</Text> : <Text style = {{color: 'white'}}>last seen at {lastSeenTime}</Text> }
+                {lastSeenTime === "online" ? <Text style = {{color: 'white'}}>online</Text> : <Text style = {{color: 'white'}}>last seen  - {lastSeenTime}</Text> }
             </View>
             )
         },
