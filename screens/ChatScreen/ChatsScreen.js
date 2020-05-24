@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet,ScrollView, Button, TouchableOpacity,TextInput, Dimensions,Image,Modal, Keyboard,Animated,Easing } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { Ionicons } from '@expo/vector-icons';
@@ -13,7 +13,6 @@ export default class ChatsScreen extends React.Component{
         this.showSearch = new Animated.Value(0)
         this.spin = new Animated.Value(0)
         this.state = {
-            hello:'Hi',
             searchList : [],
             current:'',
             modal:{},
@@ -210,6 +209,7 @@ export default class ChatsScreen extends React.Component{
     return (
         <View style = {styles.coontainer} >
         {this.state.pressed?
+            <View>
             <Animated.View style={{flexDirection: 'row', 
                                     justifyContent: 'center', 
                                     borderWidth:1,
@@ -235,10 +235,6 @@ export default class ChatsScreen extends React.Component{
                 <Ionicons onPress = {()=>this.show()} style={styles.searchIcon} name={this.state.pressed?"md-close":"md-search"} size={30} color="#fff"/>
 
             </Animated.View>
-            : null
-        }
-            
-            {this.state.pressed ?
             <ScrollView alwaysBounceVertical = {true} keyboardShouldPersistTaps='handled' >
                  { 
                      this.state.searchList.map((p,index)=> {
@@ -258,9 +254,9 @@ export default class ChatsScreen extends React.Component{
                      )
                  }  
             </ScrollView>
-            :
-            <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle = {styles.container} scrollIndicatorInsets={4} >
-                <Chat name = 'Ashish Mathew Philip' message = "Hi, are you free right now?" online
+            </View>
+            : <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle = {styles.container} scrollIndicatorInsets={4} >
+                <Chat name = 'Ashish Philip' message = "Hi, are you free right now?" online
                  onSelect = {() => this.props.navigation.navigate("ChatDetail", {
                         name: "Yash Kataruka"
                     })} time = "16:43 PM" delivered
@@ -333,7 +329,7 @@ export default class ChatsScreen extends React.Component{
                     image = "https://scontent.fdel21-1.fna.fbcdn.net/v/t31.0-0/p640x640/27500624_1631883743526849_5371185179369120659_o.jpg?_nc_cat=111&_nc_sid=85a577&_nc_ohc=HxC82h-6TjgAX9PHczR&_nc_ht=scontent.fdel21-1.fna&_nc_tp=6&oh=433e35c82605599e6def6a9d1ce587d5&oe=5ED304FC" 
                 />
             </ScrollView>
-            }
+        }
             <View style={{position: 'absolute',
                             width: 50,
                             height: 50,
