@@ -5,10 +5,10 @@ PATH:
   C:\Python27\;C:\Python27\Scripts;C:\Program Files\Intel\iCLS Client\;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\Java\jdk-13.0.1\bin;C:\Program Files\nodejs\;C:\ProgramData\chocolatey\bin;C:\Users\yashk\AppData\Local\Android\Sdk\platform-tools C:\Program Files\nodejs\;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files\Git\bin\;C:\Program Files\Git\cmd\;C:\Users\yashk\AppData\Local\Programs\Python\Python38-32\Scripts\;C:\Users\yashk\AppData\Local\Programs\Python\Python38-32\;C:\Users\yashk\AppData\Local\Microsoft\WindowsApps;;C:\Users\yashk\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\yashk\AppData\Roaming\npm
 
 Yarn version: 
-  1.22.4
+  1.21.1
 
 Node version: 
-  12.16.1
+  12.14.1
 
 Platform: 
   win32 x64
@@ -54,6 +54,13 @@ npm manifest:
       "react-native-gifted-chat-video-support": "^0.4.6",
       "react-native-keyboard-spacer": "^0.4.1",
       "react-native-lightbox": "^0.8.1",
+      "@react-native-community/async-storage": "^1.10.1",
+      "@react-native-community/masked-view": "0.1.6",
+      "@react-native-community/picker": "^1.5.0",
+      "expo": "~37.0.3",
+      "expo-barcode-scanner": "^8.1.0",
+      "react-native-material-menu": "^1.1.3",
+      "react-native-menu-button": "^1.0.0",
       "react-native-paper": "^3.9.0",
       "react-native-reanimated": "~1.7.0",
       "react-native-safe-area-context": "0.7.3",
@@ -64,6 +71,9 @@ npm manifest:
       "react-native-web": "~0.11.7",
       "react-navigation": "^4.3.9",
       "react-navigation-drawer": "^2.4.13",
+      "react-navigation": "^4.3.9",
+      "react-navigation-drawer": "^2.4.13",
+      "react-navigation-header-buttons": "^4.0.2",
       "react-navigation-stack": "^2.4.0",
       "react-navigation-tabs": "^2.8.13",
       "react-redux": "^7.2.0",
@@ -4534,7 +4544,7 @@ Lockfile:
     resolved "https://registry.yarnpkg.com/react-native-audio/-/react-native-audio-4.3.0.tgz#fae22b81f6a4dda706fd4837d0c6a89c66cf2e7e"
     integrity sha512-QQYq28eSJy+y/Ukvry0AkbwMVELAj+LcEwCVRH+7sKLqlnoBBxGd4ilhgJHjwOiC70192LueGbjXJjPPEwW3iA==
   
-  react-native-communications@2.2.1, react-native-communications@^2.2.1:
+  react-native-communications@^2.2.1:
     version "2.2.1"
     resolved "https://registry.yarnpkg.com/react-native-communications/-/react-native-communications-2.2.1.tgz#7883b56b20a002eeb790c113f8616ea8692ca795"
     integrity sha1-eIO1ayCgAu63kMET+GFuqGksp5U=
@@ -4575,6 +4585,7 @@ Lockfile:
       react-native-lightbox "^0.8.1"
       react-native-parsed-text EvanBacon/react-native-parsed-text
       react-native-typing-animation "^0.1.7"
+      react-native-web "^0.11.7"
       uuid "3.4.0"
   
   react-native-iphone-x-helper@^1.2.1:
@@ -4692,7 +4703,7 @@ Lockfile:
     resolved "https://registry.yarnpkg.com/react-native-view-shot/-/react-native-view-shot-3.1.2.tgz#8c8e84c67a4bc8b603e697dbbd59dbc9b4f84825"
     integrity sha512-9u9fPtp6a52UMoZ/UCPrCjKZk8tnkI9To0Eh6yYnLKFEGkRZ7Chm6DqwDJbYJHeZrheCCopaD5oEOnRqhF4L2Q==
   
-  react-native-web@~0.11.7:
+  react-native-web@^0.11.7, react-native-web@~0.11.7:
     version "0.11.7"
     resolved "https://registry.yarnpkg.com/react-native-web/-/react-native-web-0.11.7.tgz#d173d5a9b58db23b6d442c4bc4c81e9939adac23"
     integrity sha512-w1KAxX2FYLS2GAi3w3BnEZg/IUu7FdgHnLmFKHplRnHMV3u1OPB2EVA7ndNdfu7ds4Rn2OZjSXoNh6F61g3gkA==

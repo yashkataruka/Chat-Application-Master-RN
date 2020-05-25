@@ -38,9 +38,6 @@ HomeScreen.navigationOptions = navData => {
             return (
                 <View style = {{flexDirection: 'row'}} >
                     <TouchableOpacity>
-                        <Ionicons name = "md-search" size = {25} color = 'white' style = {{marginRight: 20}} />
-                    </TouchableOpacity>
-                    <TouchableOpacity>
                         <Ionicons name = "md-add" size = {25} color = 'white' style = {{marginRight: 20}} />
                     </TouchableOpacity>
                 </View>
