@@ -1,93 +1,240 @@
 import React from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, Dimensions, PixelRatio } from 'react-native';
+import { View, Text, StyleSheet,ScrollView, TextInput,ToastAndroid, Image,TouchableOpacity,ActivityIndicator, Dimensions,Animated ,Keyboard} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-community/async-storage';
+import axios from 'axios';
 
 import Colors from '../../constants/Colors';
 
-var FONT_SIZE = 15;
+export default class EnterNumberScreen extends React.Component {
+    constructor(props){
+        super(props)
+        this.state = {
+            number:0,
+            loading:false
+        }
+        this.showWidth = new Animated.Value(0)
+        this.button = new Animated.Value(0)
+        this.buttonWidth = new Animated.Value(0)
+        this.buttonOpacity = new Animated.Value(0)
+    }
+    componentDidMount(){
+        this.getData()
+        this.showAnim()
 
-if (PixelRatio.get() >= 3) {
-    FONT_SIZE = 20
-}
+    }
+    getData = async () => {
+        try {
+          const value = await AsyncStorage.getItem('userId')
+          if(value !== null) {
+            this.props.navigation.navigate('Profile',{userId:value})
+          }
+        } catch(e) {
+            ToastAndroid.show(`Some Error has ocurred`, ToastAndroid.SHORT)
+            
+        }
+      }
+    showAnim(){
+        Animated.timing(this.showWidth,{
+            delay:500,
+            toValue:2
+        }).start() 
+    }
+    showbutton(){
+        Animated.parallel([
+        Animated.timing(this.button,{
+            delay:200,
+            toValue:1
+        }),
+        Animated.timing(this.buttonOpacity,{
+            delay:300,
+            toValue:1
+        })
+    ]
+        ).start()
+    }
+    hidebutton(){
+        Animated.parallel([
+            Animated.timing(this.button,{
+                delay:200,
+                toValue:0
+            }),
+            Animated.timing(this.buttonOpacity,{
+                delay:100,
+                toValue:0
+            })
+        ]
+            ).start()
+    }
+    async afterHide(){
+        this.setState({loading:true})
+        await axios.post('https://chatapp-backend111.herokuapp.com/auth/generate-otp',{
+            'mobileNo' : this.state.number
+        }).then(response => {
+            if (response.data.status) {
+             console.log(response.status);
+           } 
+          }).then(()=>this.setState({
+              loading:false
+          })).then(()=>{
+            ToastAndroid.show(`OTP Sent`, ToastAndroid.SHORT);
+          }).then(() => this.props.navigation.navigate({routeName:'EnterCode',params:{'mobileNo':this.state.number}}))
+          .catch(error => {ToastAndroid.show(`Error Occured`, ToastAndroid.SHORT);});
+        this.afterHideAnim()
+    }
+    afterHideAnim(){
+        Animated.parallel([
+            Animated.timing(this.buttonWidth,{
+                delay:200,
+                toValue:0
+            }),
+            Animated.timing(this.buttonOpacity,{
+                delay:100,
+                toValue:1
+            })
+        ]
+            ).start()
 
-const EnterNumberScreen = props => {
-    return (
+    }
+
+
+    pressed(){
+        Animated.parallel([
+            Animated.timing(this.buttonWidth,{
+                delay:100,
+                toValue:1
+            }),
+            Animated.timing(this.buttonOpacity,{
+                delay:200,
+                toValue:0
+            })
+        ]
+            ).start(()=>this.afterHide())
+    }
+    async onChange(text){
+        await this.setState({
+            number:text
+        })
+        console.log(this.state.number)
+        if(this.state.number.length==10){
+            Keyboard.dismiss()
+            this.showbutton()
+        }
+        else
+            this.hidebutton()
+        
+    } 
+ 
+    render(){
+        const width = this.showWidth.interpolate({
+            inputRange:[0,2],
+            outputRange:['0%','70%'] 
+        })
+
+        const height = this.button.interpolate({
+            inputRange:[0,1],
+            outputRange:[0,50]
+        })
+        const buttonW = this.buttonWidth.interpolate({
+            inputRange:[0,1],
+            outputRange:['80%','0%']
+        })
+        const copacity = this.showWidth.interpolate({
+            inputRange:[0,1,2],
+            outputRange:[0,0.5,1]
+        })
+        const box_y = this.showWidth.interpolate({
+            inputRange:[0,1],
+            outputRange:[0,10]  
+        })
+        const bopacity = this.buttonOpacity
+    return ( 
+    <View style={{flex:1,backgroundColor:'#fff'}}>    
         <View style = {styles.container} >
-            <View style = {styles.card} >
-                <View style = {{marginTop: '5%', marginLeft: '8%', marginBottom: 20, height: 20}} >
-                    <Text style = {{fontWeight: 'bold', fontSize: FONT_SIZE, textAlign: 'left'}} >
-                        Enter your Mobile Number to Login or Register
-                    </Text>
-                </View>
-                <View style = {styles.number} >
-                    <View style = {{borderColor: '#ccc', borderWidth: 1, padding: 10, height: 50, justifyContent: 'center'}} >
-                        <Text style = {{fontSize: 18}} >+91</Text>
-                    </View>
-                    <View  style = {styles.textInput}  >
-                        <TextInput keyboardType = "number-pad" key maxLength = {10}  style = {{fontSize: 18}} />
-                    </View>
-                </View>
-                <View style = {{height: 50, width: 50, borderRadius: 25, backgroundColor: Colors.primary,
-                        left: Dimensions.get("window").width / 1.37, justifyContent: 'center', alignItems: 'center' }} >
-                    <TouchableOpacity onPress = {() => props.navigation.navigate("EnterCode")} >
-                        <Ionicons name = "md-arrow-forward" size = {27} color = "white" />
-                    </TouchableOpacity>
-                </View>
-            </View>
-            <View style = {{flex: 1, justifyContent: 'flex-end', marginBottom: 30}} >
-                <View style = {{flexDirection: 'row', alignItems: 'flex-end', marginRight: 10}} >
-                    <TouchableOpacity onPress = {() => props.navigation.navigate("ConnectSocially")} >
-                        <View style = {styles.connectSocially} >
-                            <Text style = {{color: 'white', marginHorizontal: 10, marginVertical: 5, fontSize: FONT_SIZE}}>Connect Socially</Text>
-                        </View>
-                    </TouchableOpacity>
-                </View>
-                <View style = {{marginLeft: 45, marginTop: 20, flexDirection: 'row'}} >
+            <View style = {{marginTop:'10%',alignItems:'center',marginBottom:20}} >
+                <View style = {{marginTop: 20, flexDirection: 'row'}} >
                     <View style = {{width: 50, height: 5, backgroundColor: 'black', borderRadius: 3, marginRight: 10}} />
                     <View style = {{width: 50, height: 5, backgroundColor: 'white', borderRadius: 3, borderWidth: 1, borderColor: 'black'}} />
                 </View>
             </View>
-        </View>
-    )
-}
+            <Animated.View style = {[styles.card,{opacity:copacity,transform:[{translateY:box_y}]}]} >
+                <View style = {{margin: 20,marginBottom:50}}>
+                    <Text style = {{fontWeight: 'bold', fontSize: 20}} >
+                        Enter your Mobile Number to Login or Register
+                    </Text>
+                </View>
+                <View style = {styles.number} >
+                    <View style = {{borderColor: '#ccc', borderBottomWidth: 4, padding: 10, height: 35, justifyContent: 'center',alignItems:'flex-start',width:60}} >
+                        <Text style = {{fontSize: 18}} >+91</Text>
+                    </View> 
+                    {/*NUMBER INPUT FIELD */} 
+                    <Animated.View style = {{width}}>                  
+                       <TextInput style = {{marginLeft:30,borderBottomWidth:4,borderColor:"#ccc",paddingLeft: 15,fontSize:18,height:35}} keyboardType = "number-pad" placeholder = "10-Digit No" key maxLength = {10} onChangeText = {(text)=>this.onChange(text)} />
+                    </Animated.View>
+                </View>
+                {/*NEXT BUTTON */}
 
-EnterNumberScreen.navigationOptions = navData => {
-    return {
-        headerTitle: 'Campus Ring'
+            </Animated.View>
+            <TouchableOpacity style = {{width:'100%'}} onPress = {()=>this.pressed()}>
+                <Animated.View style = {{backgroundColor:Colors.primary,justifyContent:'center',height,width:buttonW,opacity:bopacity,borderBottomRightRadius:10,borderBottomLeftRadius:10,alignSelf:'center'}}>
+                    
+                    <Text style = {{textAlign:'center',fontWeight:'bold',color:'#fff',fontSize:18}}>NEXT</Text>
+                      
+                </Animated.View>
+            </TouchableOpacity>  
+                
+            <View style={{backgroundColor:'#fff', flexDirection:'row', alignItems:'flex-end'}}>
+                <Image style={{width:Dimensions.get('window').width+100,height:(Dimensions.get('window').width*2)/3,marginTop:'10%'}} source={require("../../assets/bckgrd.jpg")} />
+            </View>
+            <ActivityIndicator size="large" animating = {this.state.loading} color={Colors.primary} />
+        </View>
+    </View>    
+    )
     }
 }
 
+
+EnterNumberScreen.navigationOptions = navData => {
+    hello = new EnterNumberScreen().state
+    return {
+        headerTitle: 'Campus Ring'
+
+    }
+}
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         height: '100%',
-        width: '100%'
+        width: '100%',
+        position:'absolute',
+        alignItems:'center',
+        backgroundColor:'#fff'
     },
     card: {
-        margin: '10%',
-        height: Dimensions.get("window").height / 4.5,
+        borderTopColor:Colors.primary,
+        borderTopWidth:3,
         width: '80%',
         elevation: 5,
         backgroundColor: 'white',
-        borderRadius: 10
+        borderTopLeftRadius:10,
+        borderTopRightRadius:10,
+        marginBottom:'5%'
     },
-    number: {
-        width: '85%',
-        marginLeft: 25,
-        marginTop: 10,
+    number: { 
+        marginLeft: 20,
         flexDirection: 'row',
-        alignItems: 'center'
+        justifyContent: 'flex-start',
+        alignItems: 'center',
+        marginBottom:40
     },
     textInput: {
-        marginLeft: 20,
-        width: '70%',
+        marginLeft: 25,
         backgroundColor: 'white',
-        borderWidth: 1,
+        borderBottomWidth: 1,
         borderColor: '#ccc',
-        height: 50,
+        height: 35,
         fontSize: 18,
-        paddingLeft: 15,
-        justifyContent: 'center'
+        paddingLeft: 15
     },
     connectSocially: {
         justifyContent: 'center',
@@ -97,5 +244,3 @@ const styles = StyleSheet.create({
         marginLeft: 40
     }
 })
-
-export default EnterNumberScreen;

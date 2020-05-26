@@ -409,7 +409,7 @@ class ChatsScreen extends Component {
                             width: 50,
                             height: 50,
                             borderRadius:25,
-                            backgroundColor:'#009ACD',
+                            backgroundColor:Colors.primary,
                             alignItems: 'center',
                             justifyContent: 'center',
                             right: 30,
@@ -546,7 +546,8 @@ const styles = StyleSheet.create({
         paddingRight: 10,
         paddingBottom: 10,
         paddingLeft: 0,
-        color: '#424242',
+        color: '#fff',
+        fontSize:18
     },
     
 })

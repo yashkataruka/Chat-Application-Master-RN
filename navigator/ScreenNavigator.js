@@ -9,8 +9,11 @@ import Screens from '../components/Screens'
 
 import EnterNumberScreen from '../screens/Auth/EnterNumberScreen';
 import EnterCodeScreen from '../screens/Auth/EnterCodeScreen';
-import ConnectSociallyScreen from '../screens/Auth/ConnectSociallyScreen';
-import Colors from '../constants/Colors';
+import ProfileScreen from '../screens/Auth/ProfileScreen';
+import ProfessionScreen from '../screens/Auth/ProfessionScreen';
+import StudentRegistrationScreen from '../screens/Auth/StudentRegistrationScreen';
+import TeacherRegistrationScreen from '../screens/Auth/TeacherRegistrationScreen';
+import AlumniRegistrationScreen from '../screens/Auth/AlumniRegistrationScreen';
 import HomeScreen from '../screens/ChatScreen/HomeScreen';
 import StoriesScreen from '../screens/ChatScreen/StoriesScreen';
 import PostScreen from '../screens/ChatScreen/PostScreen';
@@ -25,51 +28,6 @@ import UserDetailScreen from '../screens/ChatScreen/UserDetailScreen';
 import VideoScreen from '../screens/ChatScreen/VideoScreen';
 import AudioScreen from '../screens/ChatScreen/AudioScreen';
 import ForwardScreen from '../screens/ChatScreen/ForwardScreen';
-
-const NumberLoginNavigator = createStackNavigator({
-    EnterNumber: {
-        screen: EnterNumberScreen,
-        navigationOptions: {
-            headerTitleAlign: 'center',
-            headerTintColor: 'white',
-            headerStyle: {
-                backgroundColor: Colors.primary
-            }
-        }
-    },
-    ConnectSocially: {
-        screen: ConnectSociallyScreen,
-        navigationOptions: {
-            headerTitleAlign: 'center',
-            headerTintColor: 'white',
-            headerStyle: {
-                backgroundColor: Colors.primary
-            }
-        }
-    }
-})
-
-const EnterCodeNavigator = createStackNavigator({
-    EnterCode: {
-        screen: EnterCodeScreen,
-        navigationOptions: {
-            headerTitleAlign: 'center',
-            headerTintColor: 'white',
-            headerStyle: {
-                backgroundColor: Colors.primary
-            }
-        }
-    }
-})
-
-// const HomeScreenNavigator = createStackNavigator({
-//     HomeScreen: {
-//         screen: HomeScreen,
-//         navigationOptions: {
-//             headerShown: false
-//         }
-//     }
-// })
 
 const StoriesNavigator = createStackNavigator({
     Stories: {
@@ -238,16 +196,52 @@ const styles = StyleSheet.create({
     }
 })
 
-const AuthNavigator = createSwitchNavigator({
-    // NumberLogin: {
-    //     screen: NumberLoginNavigator
-    // },
-    // EnterCode: {
-    //     screen: EnterCodeNavigator
-    // },
-    Main: {
-        screen: MainNavigator
+const AuthNavigator = createStackNavigator(
+    {
+      EnterNumber: {
+        screen: EnterNumberScreen
+      },
+      EnterCode : {
+        screen: EnterCodeScreen
+      },
+      Profile: {
+        screen: ProfileScreen
+      },
+      Profession : {
+        screen: ProfessionScreen
+      },
+      StudentRegistration: {
+        screen: StudentRegistrationScreen
+      },
+      TeacherRegistration : {
+        screen: TeacherRegistrationScreen
+      },
+      AlumniRegistration: {
+        screen: AlumniRegistrationScreen,
+      },
+      Main: {
+        screen: MainNavigator,
+        navigationOptions: {
+            headerShown: false
+        }
+      }
+    },
+    {
+      defaultNavigationOptions: {
+        headerStyle: {
+          backgroundColor: Colors.primary,
+        },
+        headerTintColor: '#fff',
+        headerTitleAlign: 'center',
+        headerTitleStyle: {
+          fontWeight: 'bold',
+        },
+        animationEnabled:false
+        //...TransitionPresets.SlideFromRightIOS,
+      },
+      
+      
     }
-})
+  );
 
 export default createAppContainer(AuthNavigator)
