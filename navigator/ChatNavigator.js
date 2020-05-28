@@ -55,14 +55,14 @@ const ChatNavigator = createStackNavigator({
                 elevation: 0,
                 backgroundColor: Colors.primary
             },
-            headerRight: () => {
+            headerRight: (e) => {
                 return (
-                    <View style = {{flexDirection: 'row'}} >
+                    <View style={{ flexDirection: 'row' }} >
                         <TouchableOpacity>
-                            <Ionicons name = "md-search" size = {25} color = 'white' style = {{marginRight: 20}} />
+                            <Ionicons name="md-search" size={25} color='white' style={{ marginRight: 20 }} />
                         </TouchableOpacity>
                         <TouchableOpacity>
-                            <Ionicons name = "md-add" size = {25} color = 'white' style = {{marginRight: 20}} />
+                            <Ionicons name="md-add" size={25} color='white' style={{ marginRight: 20 }} />
                         </TouchableOpacity>
                     </View>
                 )

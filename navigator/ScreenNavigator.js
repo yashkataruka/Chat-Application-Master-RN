@@ -18,6 +18,9 @@ import MiscScreen from '../screens/ChatScreen/MiscScreen';
 import ChatDetailScreen from '../screens/ChatScreen/ChatDetailScreen';
 import ChatsScreen from '../screens/ChatScreen/ChatsScreen';
 import ChatNavigator from './ChatNavigator';
+import CreatePost from "../screens/ChatScreen/CreatePost"
+import SettingScreen from "../screens/ChatScreen/SettingScreen"
+import SinglePostScreen from "../screens/ChatScreen/SinglePostScreen"
 
 const NumberLoginNavigator = createStackNavigator({
     EnterNumber: {
@@ -156,7 +159,7 @@ const tabScreenConfig = {
             tabBarColor: 'white',
             tabBarLabel: 'Misc'
         }
-    }
+    },
 }
 
 const BottomTabNavigator = createBottomTabNavigator(tabScreenConfig, {
@@ -183,6 +186,15 @@ const MainNavigator = createStackNavigator({
     },
     ChatDetail: {
         screen: ChatDetailScreen
+    },
+    CreatePost: {
+        screen: CreatePost
+    },
+    SettingScreen: {
+        screen: SettingScreen
+    },
+    SinglePostScreen: {
+        screen: SinglePostScreen
     }
 })
 

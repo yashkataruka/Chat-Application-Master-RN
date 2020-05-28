@@ -1,18 +1,18 @@
-import TOGGLE_HEADER from '../actions/HomeHeaderDisplay';
+import { TOGGLE_HEADER } from '../actions/HomeHeaderDisplay';
 
 const initialState = {
     homeHeaderVisible: true
 }
 
 export const homeHeaderReducer = (state = initialState, action) => {
-    switch(action.type) {
+    switch (action.type) {
         case TOGGLE_HEADER:
             value = state.homeHeaderVisible
             return {
                 ...state,
                 homeHeaderVisible: !value
             }
-        default: 
+        default:
             return state
     }
 }

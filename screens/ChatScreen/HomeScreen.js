@@ -13,7 +13,7 @@ const HomeScreen = props => {
     // console.log(headerShown)
 
     return (
-        <ChatNavigator />    
+        <ChatNavigator />
     );
 }
 
@@ -36,13 +36,13 @@ HomeScreen.navigationOptions = navData => {
         headerTintColor: 'white',
         headerRight: () => {
             return (
-                <View style = {{flexDirection: 'row'}} >
+                <View style={{ flexDirection: 'row' }} >
                     <TouchableOpacity>
-                        <Ionicons name = "md-search" size = {25} color = 'white' style = {{marginRight: 20}} />
+                        <Ionicons name="md-search" size={25} color='white' style={{ marginRight: 20 }} />
                     </TouchableOpacity>
-                    <TouchableOpacity>
+                    {/* <TouchableOpacity>
                         <Ionicons name = "md-add" size = {25} color = 'white' style = {{marginRight: 20}} />
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
                 </View>
             )
         }
