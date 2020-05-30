@@ -1,10 +1,11 @@
 import React from 'react';
-import { View, Text, StyleSheet, ImageBackground,BackHandler,Alert, Switch, TextInput, TouchableOpacity, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, ImageBackground,BackHandler,Alert, Switch, TextInput,ActivityIndicator,ToastAndroid, TouchableOpacity, Dimensions } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import Colors from '../../constants/Colors';
 import Slider from 'react-native-fluid-slider';
 import { withOrientation } from 'react-navigation';
+import axios from 'axios'
 
 export default class ProfileScreen extends React.Component{
     constructor(props){
@@ -16,6 +17,10 @@ export default class ProfileScreen extends React.Component{
             wbg:'#fff',
             micon:'#000',
             wicon:'#000',
+            name:'',
+            loading:false,
+            gender:'',
+            userId:''
 
         }
     }
@@ -31,6 +36,7 @@ export default class ProfileScreen extends React.Component{
         return true;
       };
     componentDidMount() {
+        this.setState({userId:this.props.navigation.state.params.userId})
         console.log(this.props.navigation.state.params.userId)
         this.backHandler = BackHandler.addEventListener(
           "hardwareBackPress",
@@ -50,6 +56,7 @@ export default class ProfileScreen extends React.Component{
             this.setState({
                 mbg:Colors.primary,
                 micon:'#fff',
+                gender:'m',
                 wbg:'#fff',
                 wicon:'#000',
             })
@@ -63,6 +70,7 @@ export default class ProfileScreen extends React.Component{
             this.setState({
                 wbg:Colors.primary,
                 wicon:'#fff',
+                gender:'f',
                 mbg:'#fff',
                 micon:'#000',
                 
@@ -86,6 +94,23 @@ export default class ProfileScreen extends React.Component{
           console.log(E);
         }
       };
+ async handlePress(){
+        this.setState({loading:true})
+        const config = {
+            headers: { Authorization: `Bearer ${this.props.navigation.state.params.userId}` }
+        };
+        
+        await axios.patch('https://chatapp-backend111.herokuapp.com/user',{
+            'name' : this.state.name,
+            'gender' : this.state.gender
+        },config).then(()=>{
+            ToastAndroid.show(`Profile Set`, ToastAndroid.SHORT);
+          }).then(()=>this.setState({
+              loading:false
+          })).then(() => this.props.navigation.navigate('Profession',{userId:this.state.userId}))
+          .catch(error => {ToastAndroid.show(`Something is wrong`, ToastAndroid.SHORT);});
+        this.setState({loading:false})
+      }
     render(){
     return( 
             <View style={styles.innerContainer}>
@@ -100,8 +125,8 @@ export default class ProfileScreen extends React.Component{
                     </ImageBackground>  
                 </View>
                 <View style = {{flexDirection:'row',marginTop:20,alignItems:'center',justifyContent:'center'}}>
-                    <TextInput  placeholder="Name" style={{borderBottomWidth:1,borderColor:'#000',fontSize:18,paddingLeft:10,width:'50%',marginRight:10}}/>
-                    <Ionicons size = {30} name = "md-create" color = {Colors.primary}/>
+                    <Ionicons size = {30} name = "md-person" color = {Colors.primary}/>
+                    <TextInput onChangeText = {(t)=>this.setState({name:t})}  placeholder="Name" style={{borderBottomWidth:2,borderColor:Colors.primary,fontSize:18,paddingLeft:10,width:'50%',marginHorizontal:10}}/>
                 </View>
                 <View style={styles.sliderContainer}>
                     <View style = {{borderRadius:50,width:100,height:100,alignSelf:'center',borderColor:Colors.primary,borderWidth:3}}>
@@ -134,11 +159,12 @@ export default class ProfileScreen extends React.Component{
                         </View>
                     </TouchableOpacity>
                 </View>
-                <TouchableOpacity onPress={()=>{this.props.navigation.navigate('Profession')}} style={{alignSelf:'center',bottom:0,position:'absolute'}}>
+                <TouchableOpacity onPress={()=>this.handlePress()} style={{alignSelf:'center',bottom:0,position:'absolute'}}>
                     <View style = {{backgroundColor: Colors.primary, justifyContent: 'center', alignItems: 'center',width:Dimensions.get('window').width,height:60 }}>
                         <Text style= {{textAlign:'center',fontSize:26,fontWeight:'bold',color:'white'}}>Next</Text>
                     </View>
                 </TouchableOpacity>
+                <ActivityIndicator style = {{marginTop:30}} size="large" animating = {this.state.loading} color={Colors.primary} />
             </View>
     );
     }

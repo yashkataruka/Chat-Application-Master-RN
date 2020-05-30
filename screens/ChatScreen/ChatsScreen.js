@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Button, TouchableOpacity, AppState, ActivityIndicator,ScrollView,TextInput, Dimensions,Image,Modal, Keyboard,Animated,Easing } from 'react-native';
-import { connect } from 'react-redux'
+import { View, Text, StyleSheet, Button, TouchableOpacity,ToastAndroid, AppState, ActivityIndicator,ScrollView,TextInput, Dimensions,Image,Modal, Keyboard,Animated,Easing } from 'react-native';
+import { connect } from 'react-redux';
 import dayjs from 'dayjs';
+import io from "socket.io-client";
 import { FontAwesome, MaterialCommunityIcons, Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { useColorScheme } from 'react-native-appearance'
 
@@ -17,6 +18,7 @@ class ChatsScreen extends Component {
 
     constructor() {
         super();
+        this.socket = io("https://chatapp-backend111.herokuapp.com");
         this.showSearch = new Animated.Value(0)
         this.spin = new Animated.Value(0)
         this.state = {
@@ -28,7 +30,8 @@ class ChatsScreen extends Component {
             modal:{},
             modalshow:false,
             searchshow:false,
-            pressed:false
+            pressed:false,
+            user:{_id:'5ece33af58c3ca00041105d5'}
         }
         this.updateSearch = this.updateSearch.bind(this)
     }
@@ -218,11 +221,13 @@ class ChatsScreen extends Component {
     }
 
     componentDidMount () {
+        this.socket.emit('newUser', this.state.user);
         AppState.addEventListener('change', this._handleAppStateChange)
         this.props.updateLastSeen(this.state.user_id, "online")
         return () => {
             AppState.addEventListener('change', this._handleAppStateChange)
         }
+
     }
 
     chatPressed = (receiver_imageUrl, receiver_name, receiver_id, _id, name, avatar, lastSeenTime) => {

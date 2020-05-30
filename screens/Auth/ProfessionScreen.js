@@ -1,7 +1,8 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity,Image,Dimensions,Animated, ImageBackground } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity,Image,Dimensions,Animated, ImageBackground,ToastAndroid } from 'react-native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 import { withOrientation } from 'react-navigation';
+import AsyncStorage from '@react-native-community/async-storage';
 
 export default class ProfessionScreen extends React.Component {
     constructor(props){
@@ -22,12 +23,23 @@ export default class ProfessionScreen extends React.Component {
             pYPosition:0,
             sYPosition:0,
             aYPosition:0,
+            userId:''
         } 
     }
     componentDidMount(){
+        this.getData()
         this.props.navigation.addListener('willFocus',
         ()=>this.update())
     }
+    getData = async () => {
+        try {
+          const value = await AsyncStorage.getItem('userId')
+          this.setState({userId:value})
+        } catch(e) {
+            ToastAndroid.show(`Some Error has occurred`, ToastAndroid.SHORT)
+            
+        }
+      }
     update(){
         this.so.setValue(1),
         this.to.setValue(1),
@@ -104,7 +116,7 @@ export default class ProfessionScreen extends React.Component {
         }),
         Animated.timing(this.ao,{
             toValue:0
-        })]).start(()=>this.props.navigation.navigate('TeacherRegistration'))
+        })]).start(()=>this.props.navigation.navigate('TeacherRegistration',{userId:this.state.userId}))
     }
     sanim(){
         const { sYPosition } = this.state;
@@ -117,7 +129,7 @@ export default class ProfessionScreen extends React.Component {
         }),
         Animated.timing(this.ao,{
             toValue:0
-        })]).start(()=>this.props.navigation.navigate('StudentRegistration'))
+        })]).start(()=>this.props.navigation.navigate('StudentRegistration',{userId:this.state.userId}))
     }
     aanim(){
         const { aYPosition } = this.state;
@@ -130,7 +142,7 @@ export default class ProfessionScreen extends React.Component {
         }),
         Animated.timing(this.to,{
             toValue:0
-        })]).start(()=>this.props.navigation.navigate('AlumniRegistration'))
+        })]).start(()=>this.props.navigation.navigate('AlumniRegistration',{userId:this.state.userId}))
     }
     render() {
     return(

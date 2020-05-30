@@ -19,13 +19,14 @@ export default class EnterNumberScreen extends React.Component {
         this.buttonOpacity = new Animated.Value(0)
     }
     componentDidMount(){
-        this.getData()
+        //this.getData()
         this.showAnim()
 
     }
     getData = async () => {
         try {
           const value = await AsyncStorage.getItem('userId')
+          console.log(value)
           if(value !== null) {
             this.props.navigation.navigate('Profile',{userId:value})
           }

@@ -124,7 +124,6 @@ export default class EnterCodeScreen extends React.Component {
             'otp' : this.state.ottp
         }).then(response => {
             if (response.data.status) {
-             console.log(response.data.id);
              this.setState({id:response.data.id})
            } 
           }).then(async ()=>{
@@ -169,6 +168,21 @@ export default class EnterCodeScreen extends React.Component {
             })
         ]
             ).start(()=>this.afterHide())
+    }
+async resend(){
+        this.setState({loading:true})
+        await axios.post('https://chatapp-backend111.herokuapp.com/auth/generate-otp',{
+            'mobileNo' : this.props.navigation.state.params.mobileNo
+        }).then(response => {
+            if (response.data.status) {
+             console.log(response.status);
+           } 
+          }).then(()=>this.setState({
+              loading:false
+          })).then(()=>{
+            ToastAndroid.show(`OTP Sent`, ToastAndroid.SHORT);
+          }).then(() => this.props.navigation.navigate({routeName:'EnterCode',params:{'mobileNo':this.props.navigation.state.params.mobileNo}}))
+          .catch(error => {ToastAndroid.show(`Error Occured`, ToastAndroid.SHORT);});
     }
 
 
@@ -308,7 +322,7 @@ export default class EnterCodeScreen extends React.Component {
                     </TouchableOpacity>
             </Animated.View>
             <View style = {{flexDirection:'row',marginTop:'20%',marginLeft:'10%'}}>
-                    <TouchableOpacity onPress = {()=>this.pressed()}>
+                    <TouchableOpacity onPress = {()=>this.resend()}>
                         <View style = {styles.connectSocially}>
                             <Text style = {{color:"#fff",fontSize:16}}>Resend Code</Text>
                         </View>
