@@ -92,11 +92,12 @@ class CreatePost extends React.Component {
   createFormData = (response) => {
     const photo = {
       uri: response.uri,
-      type: "image/jpg",
+      type: response.type,
       name: "my-img.jpg",
     };
     const form = new FormData();
-    form.append(photo);
+    form.append('name','avatar')
+    form.append('acivityFile',photo);
     console.log("form data:",form)
     return form;
   };
@@ -109,13 +110,13 @@ class CreatePost extends React.Component {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          title: "The latest Post by Anshika1",
+          title: "The latest Post by Anshika5",
           description: "This is a description",
           eventType: "LOST & FOUND",
           file: this.createFormData(this.state.content)
         }),
       };
-      fetch("http://9e757b86.ngrok.io/activities", config)
+      fetch("http://5d55f2973399.ngrok.io/activities", config)
         .then((checkStatusAndGetJSONResponse) => {
         })
         .catch((err) => { console.log(err) });
