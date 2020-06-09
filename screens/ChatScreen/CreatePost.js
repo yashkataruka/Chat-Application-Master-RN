@@ -96,30 +96,55 @@ class CreatePost extends React.Component {
       name: "my-img.jpg",
     };
     const form = new FormData();
-    form.append('name','avatar')
+    // form.append('title', "this is title")
+    // form.append("description", "this is description")
+    // form.append("eventType","LOST & FOUND")
     form.append('acivityFile',photo);
-    console.log("form data:",form)
     return form;
   };
-  handleSubmit = () => {
+  handleSubmit = async () => {
+    // if (this.state.content) {
+    //   const config = {
+    //     method: 'POST',
+    //     headers: {
+    //       'Accept': 'application/json',
+    //       'Content-Type': 'application/json',
+    //     },
+    //     body: JSON.stringify({
+    //       title: "The latest Post by Anshika5",
+    //       description: "This is a description",
+    //       eventType: "LOST & FOUND",
+    //       file: this.createFormData(this.state.content)
+    //     }),
+    //   };
+    //   fetch("http://5d55f2973399.ngrok.io/activities", config)
+    //     .then((checkStatusAndGetJSONResponse) => {
+    //     })
+    //     .catch((err) => { console.log(err) });
+    // }
+    
     if (this.state.content) {
-      const config = {
-        method: 'POST',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          title: "The latest Post by Anshika5",
+      const formData = this.createFormData(this.state.content)
+      console.log("form data:", formData)
+      try {
+        const res = await axios.post('http://393ad751391b.ngrok.io/activities',
+          {
+          title: "The latest Post by Anshika90",
           description: "This is a description",
           eventType: "LOST & FOUND",
-          file: this.createFormData(this.state.content)
-        }),
-      };
-      fetch("http://5d55f2973399.ngrok.io/activities", config)
-        .then((checkStatusAndGetJSONResponse) => {
-        })
-        .catch((err) => { console.log(err) });
+          file: formData
+        },
+          {
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'multipart/form-data'
+            },
+          },
+        )
+        console.log("res:", res.data);
+      } catch (err) {
+        console.log("err in post axios:",err)
+      }
     }
   }
   render() {
