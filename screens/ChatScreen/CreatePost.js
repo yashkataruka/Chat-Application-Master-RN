@@ -1,5 +1,6 @@
 import React from 'react'
-import { View, Text, Button, Image, StyleSheet, TextInput, Picker, ScrollView } from 'react-native'
+import { View, Text, Button, Image, StyleSheet, ScrollView } from 'react-native'
+import {Picker} from 'react-native'
 import * as ImagePicker from "expo-image-picker"
 import { Ionicons, MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
 import { TouchableOpacity } from 'react-native-gesture-handler';
@@ -169,26 +170,28 @@ class CreatePost extends React.Component {
           <View style={styles.upperRight}>
             <Text style={styles.username}>{name}</Text>
             <View style={{ flexDirection: 'row' }}>
-              <View style={{ ...styles.pickerParent, width: '40%' }}>
+              {/* <View style={{ ...styles.pickerParent, width: '40%' }}>
                 <Picker
                   selectedValue={this.state.selectedTags}
                   style={styles.picker}
                   onValueChange={(itemValue, itemIndex) => this.setState({ selectedTags: itemValue })}
+                  mode="dropdown"
                 >
-                  <Picker.Item label="#tag1" value="#tag1" mode="dropdown" />
-                  <Picker.Item label="#tag2" value="#tag2" mode="dropdown" />
+                  <Picker.Item label="Java" value="java" />
+                  <Picker.Item label="JavaScript" value="js" />
                 </Picker>
-              </View>
-              <View style={{ ...styles.pickerParent, width: '60%' }}>
+              </View> */}
+              {/* <View style={{ ...styles.pickerParent, width: '60%' }}>
                 <Picker
                   selectedValue={this.state.selectedCategory}
                   style={styles.picker}
                   onValueChange={(itemValue, itemIndex) => this.setState({ selectedCategory: itemValue })}
+                  mode="dropdown"
                 >
-                  <Picker.Item label="Category 1" value="Category 1" mode="dropdown" />
-                  <Picker.Item label="Category 2" value="Category 2" mode="dropdown" />
+                  <Picker.Item label="Category 1" value="Category 1" />
+                  <Picker.Item label="Category 2" value="Category 2" />
                 </Picker>
-              </View>
+              </View> */}
             </View>
           </View>
         </View>
