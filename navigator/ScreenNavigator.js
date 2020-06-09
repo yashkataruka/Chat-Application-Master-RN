@@ -5,11 +5,15 @@ import { createStackNavigator } from 'react-navigation-stack'
 import { createBottomTabNavigator } from 'react-navigation-tabs'
 import { Ionicons, MaterialCommunityIcons, FontAwesome } from '@expo/vector-icons'
 import { useSelector } from 'react-redux';
+import Screens from '../components/Screens'
 
 import EnterNumberScreen from '../screens/Auth/EnterNumberScreen';
 import EnterCodeScreen from '../screens/Auth/EnterCodeScreen';
-import ConnectSociallyScreen from '../screens/Auth/ConnectSociallyScreen';
-import Colors from '../constants/Colors';
+import ProfileScreen from '../screens/Auth/ProfileScreen';
+import ProfessionScreen from '../screens/Auth/ProfessionScreen';
+import StudentRegistrationScreen from '../screens/Auth/StudentRegistrationScreen';
+import TeacherRegistrationScreen from '../screens/Auth/TeacherRegistrationScreen';
+import AlumniRegistrationScreen from '../screens/Auth/AlumniRegistrationScreen';
 import HomeScreen from '../screens/ChatScreen/HomeScreen';
 import StoriesScreen from '../screens/ChatScreen/StoriesScreen';
 import PostScreen from '../screens/ChatScreen/PostScreen';
@@ -22,6 +26,14 @@ import CreatePost from "../screens/ChatScreen/CreatePost"
 import SettingScreen from "../screens/ChatScreen/SettingScreen"
 import SinglePostScreen from "../screens/ChatScreen/SinglePostScreen"
 
+import CameraScreen from '../screens/ChatScreen/CameraScreen';
+import ImagePreviewScreen from '../screens/ChatScreen/ImagePreviewScreen';
+import UserDetailScreen from '../screens/ChatScreen/UserDetailScreen';
+import VideoScreen from '../screens/ChatScreen/VideoScreen';
+import AudioScreen from '../screens/ChatScreen/AudioScreen';
+import ForwardScreen from '../screens/ChatScreen/ForwardScreen';
+
+
 const NumberLoginNavigator = createStackNavigator({
     EnterNumber: {
         screen: EnterNumberScreen,
@@ -33,16 +45,16 @@ const NumberLoginNavigator = createStackNavigator({
             }
         }
     },
-    ConnectSocially: {
-        screen: ConnectSociallyScreen,
-        navigationOptions: {
-            headerTitleAlign: 'center',
-            headerTintColor: 'white',
-            headerStyle: {
-                backgroundColor: Colors.primary
-            }
-        }
-    }
+    // ConnectSocially: {
+    //     screen: ConnectSociallyScreen,
+    //     navigationOptions: {
+    //         headerTitleAlign: 'center',
+    //         headerTintColor: 'white',
+    //         headerStyle: {
+    //             backgroundColor: Colors.primary
+    //         }
+    //     }
+    // }
 })
 
 const EnterCodeNavigator = createStackNavigator({
@@ -66,6 +78,7 @@ const EnterCodeNavigator = createStackNavigator({
 //         }
 //     }
 // })
+
 
 const StoriesNavigator = createStackNavigator({
     Stories: {
@@ -100,7 +113,7 @@ const tabScreenConfig = {
                 return <Ionicons name='ios-chatbubbles' size={35} color={tabInfo.tintColor} />
             },
             tabBarColor: 'white',
-            tabBarLabel: 'Home'
+            tabBarLabel: 'Home',
         }
     },
     Stories: {
@@ -154,7 +167,7 @@ const tabScreenConfig = {
         screen: MiscNavigator,
         navigationOptions: {
             tabBarIcon: (tabInfo) => {
-                return <FontAwesome name='navicon' size={30} color={tabInfo.tintColor} />
+                return <Ionicons name='ios-menu' size={35} color={tabInfo.tintColor} />
             },
             tabBarColor: 'white',
             tabBarLabel: 'Misc'
@@ -177,11 +190,20 @@ const BottomTabNavigator = createBottomTabNavigator(tabScreenConfig, {
     }
 })
 
+const CameraSwitchNavigator = createSwitchNavigator({
+    Camera: {
+        screen: CameraScreen
+    },
+    Image: {
+        screen: ImagePreviewScreen
+    }
+})
+
 const MainNavigator = createStackNavigator({
     Tab: {
         screen: BottomTabNavigator,
         navigationOptions: {
-            headerShown: false
+            headerShown: false,
         }
     },
     ChatDetail: {
@@ -195,6 +217,30 @@ const MainNavigator = createStackNavigator({
     },
     SinglePostScreen: {
         screen: SinglePostScreen
+    },
+    Forward: {
+        screen: ForwardScreen
+    },
+    UserDetail: {
+        screen: UserDetailScreen,
+        navigationOptions: {
+            headerShown: false
+        }
+    },
+    Camera: {
+        screen: CameraSwitchNavigator,
+        navigationOptions: {
+            headerShown: false
+        }
+    },
+    VideoScreen: {
+        screen: VideoScreen,
+        navigationOptions: {
+            headerShown: false
+        }
+    },
+    Audio: {
+        screen: AudioScreen
     }
 })
 
@@ -210,16 +256,52 @@ const styles = StyleSheet.create({
     }
 })
 
-const AuthNavigator = createSwitchNavigator({
-    // NumberLogin: {
-    //     screen: NumberLoginNavigator
-    // },
-    // EnterCode: {
-    //     screen: EnterCodeNavigator
-    // },
-    Main: {
-        screen: MainNavigator
+const AuthNavigator = createStackNavigator(
+    {
+        EnterNumber: {
+            screen: EnterNumberScreen
+        },
+        EnterCode: {
+            screen: EnterCodeScreen
+        },
+        Profile: {
+            screen: ProfileScreen
+        },
+        Profession: {
+            screen: ProfessionScreen
+        },
+        StudentRegistration: {
+            screen: StudentRegistrationScreen
+        },
+        TeacherRegistration: {
+            screen: TeacherRegistrationScreen
+        },
+        AlumniRegistration: {
+            screen: AlumniRegistrationScreen,
+        },
+        Main: {
+            screen: MainNavigator,
+            navigationOptions: {
+                headerShown: false
+            }
+        }
+    },
+    {
+        defaultNavigationOptions: {
+            headerStyle: {
+                backgroundColor: Colors.primary,
+            },
+            headerTintColor: '#fff',
+            headerTitleAlign: 'center',
+            headerTitleStyle: {
+                fontWeight: 'bold',
+            },
+            animationEnabled: false
+            //...TransitionPresets.SlideFromRightIOS,
+        },
+
+
     }
-})
+);
 
 export default createAppContainer(AuthNavigator)
